@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<builds>
+	<build>
+		<!-- Name for build -->
+		<name>Post History</name>
+		<version>0.1</version>
+		
+		<!-- Allow SVN Builds? -->
+		<allow-svn>1</allow-svn>
+		
+		<!-- STR version (remove this)? -->
+		<version-str>0.1</version-str>
+		
+		<!-- Internal Version -->
+		<version-int>0.1</version-int>
+		
+		<!-- Package-info file to parse -->
+		<package-info base="{BASEDIR}">{BASEDIR}/package-info.xml</package-info>
+		
+		<!-- More files to include -->
+		<file-include source="{BASEDIR}">modification.xsl</file-include>
+		<file-include source="{BASEDIR}">package-info.xsl</file-include>
+		
+		<!-- Define languages to be included -->
+		<!--<language name="english" local-encoding="" />-->
+		<language-info>
+			<modification format="xml" type="file">Modifications.{LANGUAGE}.xml</modification>
+		</language-info>
+		<language name="english" source="{BASEDIR}/language" utf8="true" />
+		<language name="turkish" source="{BASEDIR}/language/turkish" utf8="true" encoding="ISO-8859-9" />
+		
+		<!-- Replaces -->
+		<replaces filename="*.xml,readme.txt" from="{version}" to="{VERSION_INT}" />
+		
+		<!-- Define outputs -->
+		<output type="zip">{NAME}_{VERSION}</output>
+	</build>
+</builds>

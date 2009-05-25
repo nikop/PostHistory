@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="modification.xsl" type="text/xsl"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+	ATTENTION: If you are trying to install this manually, you should try
+	the package manager.  If it will not work for you, please take a look
+	at the following for information on this format:
+		http://mods.simplemachines.org/docs/manual-install.php
+
+================================================================================
+
+	Modification files can be used to modify files so that they do what
+	your package needs them to do to work properly.
+
+ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<!-- This information needs to be the same as that in the package-info.xml. -->
+	<id>Niko:PostHistory</id>
+	<version>{version}</version>
+
+	<file name="$languagedir/Modifications.turkish.php">
+		<operation>
+			<search position="end" />
+			<add><![CDATA[// Post History Start
+$txt['core_settings_item_posthistory'] = 'İleti Geçmişi';
+$txt['core_settings_item_posthistory_desc'] = 'Veritabanında ki İleti geçmişleri.';
+
+$txt['view_post_history'] = 'İleti Geçmişini Görüntüle';
+$txt['title_view_post_history'] = 'İleti Geçmişi Görüntüleniyor - %1$s';
+
+$txt['ph_last_edit'] = 'Son Düzenleme';
+$txt['ph_last_time'] = 'Düzenleme Zamanı';
+$txt['ph_view_edit'] = 'Mesajı Görüntüle';
+
+$txt['ph_no_edits'] = 'Konuda henüz bir düzenleme yok';
+
+$txt['permissionname_posthistory_view'] = 'İleti düzenleme geçmişini görüntüle';
+$txt['permissionhelp_posthistory_view'] = 'Eski İleti geçmişini görüntüle';
+$txt['permissionname_posthistory_view_own'] = 'Kendi Konusu';
+$txt['permissionname_posthistory_view_any'] = 'Herhangibir Konuyu';
+$txt['permissionname_simple_posthistory_view_own'] = 'Kendi İleti geçmişini düzenleme';
+$txt['permissionname_simple_posthistory_view_any'] = 'Herhangibir İleti geçmişini düzenleme';
+
+$txt['cannot_posthistory_view_any'] = 'Bu yazının İleti geçmişi görünmesin!';
+// Post History END]]></add>
+		</operation>
+	</file>
+</modification>
