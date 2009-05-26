@@ -7,6 +7,13 @@
 Allows to store old versions of posts and viewing edit history of post.
 Permission can be set either to own or all posts and it's set by board.
 
+[color=blue][b][size=12pt]Changelog[/size][/b][/color]
+[color=blue][b][size=10pt]0.2[/size][/b][/color]
+[list]
+	[li]Current version is now shown in list of edits[/li]
+	[li]Added markers for original version and current edit[/li]
+[/list]
+
 [color=blue][b][size=12pt]SMF Versions supported[/size][/b][/color]
 Only SMF 2.0 RC1 is supported.
 
