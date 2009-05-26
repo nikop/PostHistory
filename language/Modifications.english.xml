@@ -34,6 +34,10 @@ $txt['ph_last_edit'] = 'Latest Edit By';
 $txt['ph_last_time'] = 'Edit Time';
 $txt['ph_view_edit'] = 'View Post';
 
+$txt['ph_original_edit'] = 'original';
+$txt['ph_current_edit'] = 'current';
+$txt['ph_current_original_edit'] = 'current, original';
+
 $txt['ph_no_edits'] = 'No one has edited this post yet';
 
 $txt['permissionname_posthistory_view'] = 'View Post Edit History';

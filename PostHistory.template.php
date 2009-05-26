@@ -28,7 +28,10 @@ function template_main()
 			echo '
 			<tr class="windowbg', $alternate ? '2' : '', '">
 				<td>', $edit['name'], '</td>
-				<td>', $edit['time'], '</td>
+				<td>
+					', $edit['time'], '
+					', $edit['is_current'] || $edit['is_original'] ? '(' . $txt['ph_' . ($edit['is_current'] ? 'current_' : '') . ($edit['is_original'] ? 'original_' : '') . 'edit'] . ')' : '', '
+				</td>
 				<td><a href="', $edit['href'], '">', $txt['ph_view_edit'], '</a></td>
 			</tr>';
 				

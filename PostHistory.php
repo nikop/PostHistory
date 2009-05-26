@@ -47,10 +47,14 @@ function PostHistory()
 		
 	// Get all the important topic info.
 	$request = $smcFunc['db_query']('', '
-		SELECT ms.subject, mc.subject AS msg_subject, mc.id_member
+		SELECT
+			ms.subject, mc.subject AS msg_subject, mc.id_member, mc.body,
+			mc.modified_name, mc.modified_time, mc.poster_time,
+			IFNULL(mem.real_name, mc.poster_name) AS poster_name
 		FROM {db_prefix}topics AS t
 			INNER JOIN {db_prefix}messages AS ms ON (ms.id_msg = t.id_first_msg)
 			INNER JOIN {db_prefix}messages AS mc ON (mc.id_msg = {int:id_msg})
+			LEFT JOIN {db_prefix}members AS mem ON (mem.id_member = mc.id_member)
 		WHERE t.id_topic = {int:current_topic}
 		LIMIT 1',
 		array(
@@ -86,8 +90,19 @@ function PostHistory()
 				'href' => $scripturl . '?action=posthistory;topic=' . $topic . '.0;msg=' . $_REQUEST['msg'] . ';edit=' . $row['id_edit'],
 				'name' => $row['modified_name'],
 				'time' => timeformat($row['modified_time']),
+				'is_original' => $row['modified_time'] == $context['ph_topic']['poster_time'],
+				'is_current' => false,
 			);
 		$smcFunc['db_free_result']($request);
+		
+		$context['post_history']['current'] = array(
+			'id' => 'current',
+			'href' => $scripturl . '?action=posthistory;topic=' . $topic . '.0;msg=' . $_REQUEST['msg'] . ';edit=current',
+			'name' => !empty($context['ph_topic']['modified_name']) ? $context['ph_topic']['modified_name'] : $context['ph_topic']['poster_name'],
+			'time' => timeformat(!empty($context['ph_topic']['modified_time']) ? $context['ph_topic']['modified_time'] : $context['ph_topic']['poster_time']),			
+			'is_original' => empty($context['ph_topic']['modified_time']),
+			'is_current' => true,
+		);
 	}
 	// Viewing single edit
 	else

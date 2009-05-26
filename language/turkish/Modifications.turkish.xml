@@ -34,6 +34,13 @@ $txt['ph_last_edit'] = 'Son Düzenleme';
 $txt['ph_last_time'] = 'Düzenleme Zamanı';
 $txt['ph_view_edit'] = 'Mesajı Görüntüle';
 
+// Untranslated
+$txt['ph_original_edit'] = 'original';
+// Untranslated
+$txt['ph_current_edit'] = 'current';
+// Untranslated
+$txt['ph_current_original_edit'] = 'current, original';
+
 $txt['ph_no_edits'] = 'Konuda henüz bir düzenleme yok';
 
 $txt['permissionname_posthistory_view'] = 'İleti düzenleme geçmişini görüntüle';
