@@ -158,8 +158,34 @@
 	
 	<file name="$sourcedir/Display.php">
 		<operation>
+			<search position="after"><![CDATA[		// Fetch attachments.]]></search>
+			<add><![CDATA[
+		// Get edited posts for Post History
+		if (!empty($modSettings['posthistoryEnabled']) && (allowedTo('posthistory_view_any') || allowedTo('posthistory_view_own')))
+		{
+			$request = $smcFunc['db_query']('', '
+				SELECT DISTINCT id_msg
+				FROM {db_prefix}messages_history
+				WHERE id_msg IN ({array_int:message_list})',
+				array(
+					'message_list' => $messages,
+				)
+			);
+			
+			$context['post_history'] = array();
+			
+			while ($row = $smcFunc['db_fetch_assoc']($request))
+				$context['post_history'][$row['id_msg']] = $row['id_msg'];
+
+			$smcFunc['db_free_result']($request);
+		}
+]]></add>
+		</operation>
+		
+		<operation>
 			<search position="after"><![CDATA['can_see_ip']]></search>
 			<add><![CDATA['can_see_history' => !empty($modSettings['posthistoryEnabled']) && (allowedTo('posthistory_view_any') || (allowedTo('posthistory_view_own') && $message['id_member'] == $user_info['id'] && !empty($user_info['id']))),
+			'has_history' => isset($context['post_history'][$message['id_msg']]),
 			]]></add>
 		</operation>
 	</file>
@@ -175,7 +201,7 @@
 			<search position="after"><![CDATA[// Show a checkbox for quick moderation?]]></search>
 			<add><![CDATA[
 		// Can we see history?
-		if ($message['can_see_history'])
+		if ($message['can_see_history'] && $message['has_history'])
 			echo '
 						<li><a href="', $scripturl, '?action=posthistory;topic=', $context['current_topic'], '.0;msg=', $message['id'], '">', $history_button, '</a></li>';
 		]]></add>

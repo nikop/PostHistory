@@ -19,7 +19,4 @@ doSettings($addSettings);
 // Step 3: Update admin features
 updateAdminFeatures('posthistory', !empty($modSettings['posthistoryEnabled']));
 
-// Step 3: Do Permissions
-//doPermission($permissions);
-
 ?>
