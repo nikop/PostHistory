@@ -15,7 +15,7 @@ Permission can be set either to own or all posts and it's set by board.
 [/list]
 
 [color=blue][b][size=12pt]SMF Versions supported[/size][/b][/color]
-Only SMF 2.0 RC1 is supported.
+Only SMF 2.0 RC1-1 is supported.
 
 [color=blue][b][size=12pt]Installation[/size][/b][/color]
 When doing manual install you have to upload post_history directory in SMF directory and run install.php file included in directory.

@@ -26,7 +26,8 @@
 			<modification format="xml" type="file">Modifications.{LANGUAGE}.xml</modification>
 		</language-info>
 		<language name="english" source="{BASEDIR}/language" utf8="true" />
-		<language name="turkish" source="{BASEDIR}/language/turkish" utf8="true" encoding="ISO-8859-9" />
+		<language name="finnish" source="{BASEDIR}/language" utf8="true" encoding="ISO-8859-1" />
+		<language name="turkish" source="{BASEDIR}/language" utf8="true" encoding="ISO-8859-9" />
 		
 		<!-- Replaces -->
 		<replaces filename="*.xml,readme.txt" from="{version}" to="{VERSION_INT}" />

@@ -20,7 +20,7 @@
 	<id>Niko:PostHistory</id>
 	<version>{version}</version>
 
-	<file name="$languagedir/Modifications.turkish.php">
+	<file name="$languagedir/Modifications.turkish.php" error="ignore">
 		<operation>
 			<search position="end" />
 			<add><![CDATA[// Post History Start

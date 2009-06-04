@@ -139,7 +139,7 @@ function build_main(xmlArray $currentBuild, $commandLineSettings, $buildFile)
 						
 					if ($lang !== 'english')
 						$langFileContent = strtr(file_get_contents($langSourcedir . '/' . $fileNameSrc), array(
-							'.' . $language->fetch('@name') . '.php">' => '.' . $lang . '.php" error="ignore">',
+							'.' . $language->fetch('@name') . '.php"' => '.' . $lang . '.php"',
 							'<version>{version}</version>' => '<version>' . $build_info['version_int'] . '</version>',
 						));
 					else
