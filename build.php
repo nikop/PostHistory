@@ -14,11 +14,13 @@ if (!class_exists('xmlArray') && !file_exists($buildBaseDir . '/Class-Package.ph
 	trigger_error(sprintf('Please copy Class-Package.php to %1$s!', $buildBaseDir), E_USER_ERROR);
 if (!file_exists($baseDir . '/Build.xml'))
 	trigger_error(sprintf('Build.xml not found in %1$s!', $buildBaseDir), E_USER_ERROR);
+if (!file_exists($outputDir) && !is_dir($outputDir) && !mkdir($outputDir))
+	trigger_error(sprintf('Unable to create directory %1$s!', $outputDir), E_USER_ERROR);
 
 // We need this from SMF
 if (!class_exists('xmlArray'))
 	require_once($buildBaseDir . '/Class-Package.php');
-
+	
 // Where is Build.xml
 $buildFile = $baseDir . '/Build.xml';
 
@@ -138,10 +140,10 @@ function build_main(xmlArray $currentBuild, $commandLineSettings, $buildFile)
 						trigger_error('Language-info is erroreus', E_USER_ERROR);
 						
 					if ($lang !== 'english')
-						$langFileContent = strtr(file_get_contents($langSourcedir . '/' . $fileNameSrc), array(
+						$langFileContent = preg_replace('@<file name="([^"]+)">@', '<file name="$1" error="skip">', strtr(file_get_contents($langSourcedir . '/' . $fileNameSrc), array(
 							'.' . $language->fetch('@name') . '.php"' => '.' . $lang . '.php"',
 							'<version>{version}</version>' => '<version>' . $build_info['version_int'] . '</version>',
-						));
+						)));
 					else
 						$langFileContent = strtr(file_get_contents($langSourcedir . '/' . $fileNameSrc), array(
 							'.' . $language->fetch('@name') . '.php">' => '.' . $lang . '.php">',
@@ -318,11 +320,11 @@ function __langnameReplaces($string, $language, array $build_info, xmlArray $cur
 // Parses general things
 function __generalParse($string, array $build_info, xmlArray $currentBuild)
 {
-	return str_replace(' ', '_', strtr($string, array(
+	return strtr($string, array(
 		'{NAME}' => $build_info['name'],
 		'{VERSION}' => $build_info['version'],
 		'{VERSION_INT}' => $build_info['version_int'],
-	)));	
+	));	
 }
 
 // File content parse
