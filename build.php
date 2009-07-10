@@ -1,60 +1,84 @@
 <?php
 
+// Version of this file
+$build_version = '1.0.2';
+	
 if (!defined('SMF'))
+{
 	define('SMF', 'SSI');
+	$use_default = true;
+}
 
 $buildBaseDir = dirname(__FILE__);
-$baseDir = dirname(__FILE__);
-$outputDir = dirname(__FILE__) . '/builds/';
-
-// Version of this file
-$build_version = '1.0.0';
+$outputDir = $buildBaseDir . '/builds/';
 
 if (!class_exists('xmlArray') && !file_exists($buildBaseDir . '/Class-Package.php'))
 	trigger_error(sprintf('Please copy Class-Package.php to %1$s!', $buildBaseDir), E_USER_ERROR);
-if (!file_exists($baseDir . '/Build.xml'))
-	trigger_error(sprintf('Build.xml not found in %1$s!', $buildBaseDir), E_USER_ERROR);
-if (!file_exists($outputDir) && !is_dir($outputDir) && !mkdir($outputDir))
-	trigger_error(sprintf('Unable to create directory %1$s!', $outputDir), E_USER_ERROR);
-
-// We need this from SMF
-if (!class_exists('xmlArray'))
-	require_once($buildBaseDir . '/Class-Package.php');
-	
-// Where is Build.xml
-$buildFile = $baseDir . '/Build.xml';
-
-$buildInformation = new xmlArray(file($buildFile));
-
-// Default Settings for commandline
-$commandLineSettings = array(
-	'build' => 'DEFAULT',
-	'svn' => in_array('--svn', $_SERVER['argv']),
-);
-
-$currentBuild = false;
-
-foreach ($buildInformation->set('/builds/build') as $build)
+		
+if (isset($use_default))
 {
-	$buildName = $build->exists('@name') ? $build->fetch('@name') : 'DEFAULT';
+	// Default Settings for commandline
+	$commandLineSettings = array(
+		'build' => 'DEFAULT',
+		'svn' => in_array('--svn', $_SERVER['argv']),
+	);
 	
-	if ($buildName == $commandLineSettings['build'])
+	// Revision specified
+	if (($rev = array_search('--rev', $_SERVER['argv'])) !== false)
 	{
-		$currentBuild = $build;
-		break;
+		if (!isset($_SERVER['argv'][$rev + 1]) || !is_numeric(trim($_SERVER['argv'][$rev + 1])))
+			trigger_error('Invalid value for --rev argument');
+		else
+			$commandLineSettings['rev'] = (int) trim($_SERVER['argv'][$rev + 1]);
 	}
+	
+	buildHandler($buildBaseDir, $outputDir, $commandLineSettings);
 }
 
-if (!$currentBuild)
-	trigger_error(sprintf('Build %1$s not defined in Builds.xml!', $commandLineSettings['build']), E_USER_ERROR);
-
-// Run main builder (done like this to make it easy to make multiple builds)
-build_main($currentBuild, $commandLineSettings, $buildFile);
-
-function build_main(xmlArray $currentBuild, $commandLineSettings, $buildFile)
+function buildHandler($baseDir, $outputDir, $commandLineSettings)
 {
-	global $buildBaseDir, $baseDir, $outputDir, $buildLog;
+	if (!file_exists($baseDir . '/Build.xml'))
+		trigger_error(sprintf('Build.xml not found in %1$s!', $buildBaseDir), E_USER_ERROR);
+	if (!file_exists($outputDir) && !is_dir($outputDir) && !mkdir($outputDir))
+		trigger_error(sprintf('Unable to create directory %1$s!', $outputDir), E_USER_ERROR);
 	
+	// We need this from SMF
+	if (!class_exists('xmlArray'))
+		require_once($baseDir . '/Class-Package.php');
+		
+	// Where is Build.xml
+	$buildFile = $baseDir . '/Build.xml';
+	
+	$buildInformation = new xmlArray(file($buildFile));
+	
+	$currentBuild = false;
+	
+	foreach ($buildInformation->set('/builds/build') as $build)
+	{
+		$buildName = $build->exists('@name') ? $build->fetch('@name') : 'DEFAULT';
+		
+		if ($buildName == $commandLineSettings['build'])
+		{
+			$currentBuild = $build;
+			break;
+		}
+	}
+	
+	if (!$currentBuild)
+		trigger_error(sprintf('Build %1$s not defined in Builds.xml!', $commandLineSettings['build']), E_USER_ERROR);
+	
+	// Run main builder (done like this to make it easy to make multiple builds)
+	return build_main($baseDir, $outputDir, $currentBuild, $commandLineSettings, $buildFile);
+}
+
+function build_main($baseDir, $outputDir, xmlArray $currentBuild, $commandLineSettings, $buildFile)
+{
+	global $buildBaseDir, $buildLog;
+	global $sBuildBaseDir, $sBaseDir, $sOutputDir;
+	
+	$sBuildBaseDir = $buildBaseDir;
+	$sBaseDir = $baseDir;
+
 	$buildLog = new BuildLog();
 	
 	$build_info = array(
@@ -69,9 +93,15 @@ function build_main(xmlArray $currentBuild, $commandLineSettings, $buildFile)
 
 	// SVN Build?		
 	if ($currentBuild->exists('allow-svn') && $currentBuild->fetch('allow-svn') && $commandLineSettings['svn'])
-	{		
-		$svnInfo = svn('info', $baseDir, true);
-		$build_info['version'] .= ' rev' . $svnInfo['max_revision'];
+	{
+		if (!isset($commandLineSettings['rev']))
+		{
+			$svnInfo = svn_wrapper('info', $baseDir, true);
+			$commandLineSettings['rev'] = (int) $svnInfo['max_revision'];
+			unset($svnInfo);
+		}
+		
+		$build_info['version'] .= ' rev' .$commandLineSettings['rev'];
 	}
 	
 	// Get package info location
@@ -162,6 +192,8 @@ function build_main(xmlArray $currentBuild, $commandLineSettings, $buildFile)
 			}
 		}
 	}
+	
+	$outputs = array();
 
 	// Do builds now
 	foreach ($currentBuild->set('output') as $output)
@@ -174,6 +206,8 @@ function build_main(xmlArray $currentBuild, $commandLineSettings, $buildFile)
 		{
 			// Extension is required
 			$filename .= '.zip';
+			
+			$outputs[] = $filename;
 			
 			$buildLog->addMessage('Writing: %1$s to %2$s', array($filename, $outputDir));
 				
@@ -208,6 +242,8 @@ function build_main(xmlArray $currentBuild, $commandLineSettings, $buildFile)
 	$buildLog->save($outputDir . '/' . $filename . '.txt');
 	
 	unset($buildLog);
+	
+	return $outputs;
 }
 
 // Build Log class
@@ -293,9 +329,9 @@ function __dirFiles(&$files, $file_source, $sub_dir)
 // Parses real directory
 function __parseDirectory($string)
 {
-	global $buildBaseDir, $baseDir;
+	global $sBuildBaseDir, $sBaseDir;
 	
-	return strtr($string, array('{BASEDIR}' => $baseDir, '{BUILDBASE}' => $buildBaseDir));
+	return strtr($string, array('{BASEDIR}' => $sBaseDir, '{BUILDBASE}' => $sBuildBaseDir));
 }
 
 // Replaces placeholders in filename
@@ -404,7 +440,7 @@ function __packageInfoReplace($string, array $build_info, xmlArray $currentBuild
 }
 
 // Wrapper for SVN
-function svn($function, $params, $username = '', $password = '')
+function svn_wrapper($function, $params, $username = '', $password = '')
 {
 	global $svn_command;
 	
