@@ -22,7 +22,7 @@
 	<version>{version}</version>
 	<type>modification</type>
 
-	<install for="2.0 RC1, 2.0 RC1-1">
+	<install for="2.0 RC1.2">
 		<readme parsebbc="true">readme.txt</readme>
 		
 		<!-- Run Installer/upgrader -->
@@ -36,7 +36,7 @@
 		<modification format="xml" type="file">install.xml</modification>
 	</install>
 
-	<uninstall for="2.0 RC1, 2.0 RC1-1">
+	<uninstall for="2.0 RC1.2">
 		<remove-file name="$sourcedir/PostHistory.php" />
 		<remove-file name="$themedir/PostHistory.template.php" />
 		

@@ -9,10 +9,10 @@
 		<allow-svn>1</allow-svn>
 		
 		<!-- STR version (remove this)? -->
-		<version-str>0.2</version-str>
+		<version-str>0.2 Beta 1</version-str>
 		
 		<!-- Internal Version -->
-		<version-int>0.2</version-int>
+		<version-int>0.2 Beta 1</version-int>
 		
 		<!-- Package-info file to parse -->
 		<package-info base="{BASEDIR}">{BASEDIR}/package-info.xml</package-info>

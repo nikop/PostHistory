@@ -104,6 +104,18 @@ function PostHistory()
 			'is_current' => true,
 		);
 	}
+	elseif ($_REQUEST['edit'] == 'current')
+	{
+		$context['current_edit'] = array(
+			'id' => 'current',
+			'href' => $scripturl . '?action=posthistory;topic=' . $topic . '.0;msg=' . $_REQUEST['msg'] . ';edit=current',
+			'name' => !empty($context['ph_topic']['modified_name']) ? $context['ph_topic']['modified_name'] : $context['ph_topic']['poster_name'],
+			'time' => timeformat(!empty($context['ph_topic']['modified_time']) ? $context['ph_topic']['modified_time'] : $context['ph_topic']['poster_time']),			
+			'body' => parse_bbc($context['ph_topic']['body']),
+		);
+		
+		$context['sub_template'] = 'view_edit';
+	}
 	// Viewing single edit
 	else
 	{
