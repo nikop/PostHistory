@@ -224,7 +224,7 @@
 		</operation>
 	</file>
 	
-	<file name="$themesdir/core/Display.template.php">
+	<file name="$themes_dir/core/Display.template.php">
 		<operation>
 			<search position="before"><![CDATA[	$restore_message_button = create_button('restore_topic.gif', 'restore_message', 'restore_message', 'align="middle"');]]></search>
 			<add><![CDATA[
