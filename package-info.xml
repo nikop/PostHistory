@@ -22,6 +22,28 @@
 	<version>{version}</version>
 	<type>modification</type>
 
+	<install for="2.0 RC2">
+		<readme parsebbc="true">readme.txt</readme>
+		
+		<!-- Run Installer/upgrader -->
+		<code>post_history/Database.php</code>
+		<code>post_history/Subs-Install.php</code>
+		<database>post_history/install.php</database>
+		
+		<require-file name="PostHistory.php" destination="$sourcedir" />
+		<require-file name="PostHistory.template.php" destination="$themedir" />
+		
+		<modification format="xml" type="file">install-rc2.xml</modification>
+	</install>
+
+	<uninstall for="2.0 RC2">
+		<remove-file name="$sourcedir/PostHistory.php" />
+		<remove-file name="$themedir/PostHistory.template.php" />
+		
+		<!-- Remove code modifications -->
+		<modification format="xml" type="file" reverse="true">install-rc2.xml</modification>
+	</uninstall>
+
 	<install for="2.0 RC1.2">
 		<readme parsebbc="true">readme.txt</readme>
 		

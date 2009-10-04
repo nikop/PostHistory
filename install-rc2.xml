@@ -1,0 +1,244 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="modification.xsl" type="text/xsl"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+	ATTENTION: If you are trying to install this manually, you should try
+	the package manager.  If it will not work for you, please take a look
+	at the following for information on this format:
+		http://mods.simplemachines.org/docs/manual-install.php
+
+================================================================================
+
+	Modification files can be used to modify files so that they do what
+	your package needs them to do to work properly.
+
+ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<!-- This information needs to be the same as that in the package-info.xml. -->
+	<id>Niko:PostHistory</id>
+	<version>{version}</version>
+
+	<file name="$boarddir/index.php">
+		<operation>
+			<search position="before"><![CDATA[		'post2' => array('Post.php', 'Post2'),]]></search>
+			<add><![CDATA[
+		'posthistory' => array('PostHistory.php', 'PostHistory'),]]></add>
+		</operation>
+	</file>
+	
+	<file name="$sourcedir/Subs-Post.php">
+		<operation>
+			<search position="before"><![CDATA[		if (!empty($modSettings['search_custom_index_config'])]]></search>
+			<add><![CDATA[ || !empty($modSettings['posthistoryEnabled'])]]></add>
+		</operation>
+		
+		<operation>
+			<search position="replace"><![CDATA[$request = $smcFunc['db_query']('', '
+				SELECT body
+				FROM {db_prefix}messages
+				WHERE id_msg = {int:id_msg}',
+				array(
+					'id_msg' => $msgOptions['id'],
+				)
+			);
+			list ($old_body) = $smcFunc['db_fetch_row']($request);
+			$smcFunc['db_free_result']($request);]]></search>
+			
+			<add><![CDATA[$request = $smcFunc['db_query']('', '
+				SELECT body, modified_name, modified_time, poster_name, poster_time
+				FROM {db_prefix}messages
+				WHERE id_msg = {int:id_msg}',
+				array(
+					'id_msg' => $msgOptions['id'],
+				)
+			);
+			list ($old_body, $ph_modify_name, $ph_modify_time, $ph_poster_name, $ph_poster_time) = $smcFunc['db_fetch_row']($request);
+			$smcFunc['db_free_result']($request);
+			
+			// Add to Post History table
+			if (!empty($modSettings['posthistoryEnabled']))
+				$smcFunc['db_insert']('',
+					'{db_prefix}messages_history',
+					array(
+						'id_msg' => 'int',
+						'modified_name' => 'string-255',
+						'modified_time' => 'int',
+						'body' => 'string',
+					),
+					array(
+						$msgOptions['id'],
+						!empty($ph_modify_name) ? $ph_modify_name : $ph_poster_name,
+						!empty($ph_modify_time) ? $ph_modify_time : $ph_poster_time,
+						$old_body,
+					),
+					array('id_edit')
+				);
+
+			if (empty($modSettings['search_custom_index_config']))
+				unset($old_body);
+			unset($ph_modify_name, $ph_modify_time, $ph_poster_name, $ph_poster_time);
+			// END Post History]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/ManageSettings.php">
+		<operation>
+			<search position="after"><![CDATA[
+		// pm = post moderation.]]></search>
+			<add><![CDATA[		// posthistory
+		'posthistory' => array(
+			'settings' => array(
+				'posthistoryEnabled' => 1,
+			),
+		),]]></add>
+		</operation>
+	</file>
+	
+	<file name="$sourcedir/RemoveTopic.php">
+		<operation>
+			<search position="after"><![CDATA[		if (!empty($modSettings['search_custom_index_config']))]]></search>
+			<add><![CDATA[		// Delete edit history of message
+		$smcFunc['db_query']('', '
+			DELETE FROM {db_prefix}messages_history
+			WHERE id_msg = {int:id_msg}',
+			array(
+				'id_msg' => $message,
+			)
+		);
+
+]]></add>
+		</operation>
+		
+		<operation>
+			<search position="after"><![CDATA[	// Delete anything related to the topic.]]></search>
+			<add><![CDATA[		// Delete edit history of messages
+		$messages = array();
+		$request = $smcFunc['db_query']('', '
+			SELECT id_msg
+			FROM {db_prefix}messages
+			WHERE id_topic IN ({array_int:topics})',
+			array(
+				'topics' => $topics,
+			)
+		);
+		while ($row = $smcFunc['db_fetch_assoc']($request))
+			$messages[] = $row['id_msg'];
+		$smcFunc['db_free_result']($request);
+		
+		if (!empty($messages))
+			$smcFunc['db_query']('', '
+				DELETE FROM {db_prefix}messages_history
+				WHERE id_msg IN({array_int:messages})',
+				array(
+					'messages' => $messages,
+				)
+			);
+
+]]></add>
+		</operation>
+	</file>
+	
+	<file name="$sourcedir/ManagePermissions.php">
+		<operation>
+			<search position="before"><![CDATA[			'modify' => array(true, 'post', 'modify', 'moderate'),]]></search>
+			<add><![CDATA[
+			'posthistory_view' => array(true, 'post', 'moderate', 'moderate'),]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/Who.php">
+		<operation>
+			<search position="before"><![CDATA[		'mods' => array(]]></search>
+			<add><![CDATA[
+				'Post History &copy; 2007-2009 <a href="http://www.madjoki.com/">Niko Pahajoki</a>',]]></add>
+		</operation>
+	</file>
+	
+	<file name="$sourcedir/Display.php">
+		<operation>
+			<search position="after"><![CDATA[		// Fetch attachments.]]></search>
+			<add><![CDATA[
+		// Get edited posts for Post History
+		if (!empty($modSettings['posthistoryEnabled']) && (allowedTo('posthistory_view_any') || allowedTo('posthistory_view_own')))
+		{
+			$request = $smcFunc['db_query']('', '
+				SELECT DISTINCT id_msg
+				FROM {db_prefix}messages_history
+				WHERE id_msg IN ({array_int:message_list})',
+				array(
+					'message_list' => $messages,
+				)
+			);
+			
+			$context['post_history'] = array();
+			
+			while ($row = $smcFunc['db_fetch_assoc']($request))
+				$context['post_history'][$row['id_msg']] = $row['id_msg'];
+
+			$smcFunc['db_free_result']($request);
+		}
+]]></add>
+		</operation>
+		
+		<operation>
+			<search position="after"><![CDATA['can_see_ip']]></search>
+			<add><![CDATA['can_see_history' => !empty($modSettings['posthistoryEnabled']) && (allowedTo('posthistory_view_any') || (allowedTo('posthistory_view_own') && $message['id_member'] == $user_info['id'] && !empty($user_info['id']))),
+			'has_history' => isset($context['post_history'][$message['id_msg']]),
+			]]></add>
+		</operation>
+	</file>
+	
+	<file name="$themedir/Display.template.php">
+		<operation>
+			<search position="after"><![CDATA[// Show a checkbox for quick moderation?]]></search>
+			<add><![CDATA[
+		// Can we see history?
+		if ($message['can_see_history'] && $message['has_history'])
+			echo '
+						<li class="history_button"><a href="', $scripturl, '?action=posthistory;topic=', $context['current_topic'], '.0;msg=', $message['id'], '">', $history_button, '</a></li>';
+		]]></add>
+		</operation>		
+	</file>
+	
+	<file name="$themedir/css/index.css">
+		<operation>
+			<search position="after"><![CDATA[ul.quickbuttons li.inline_mod_check]]></search>
+			<add><![CDATA[ul.quickbuttons li.history_button
+{
+	background: url(../images/butttons/calendarpe.gif) no-repeat;
+}
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$themedir/css/rtl.css">
+		<operation>
+			<search position="after"><![CDATA[ul.quickbuttons li.inline_mod_check]]></search>
+			<add><![CDATA[ul.quickbuttons li.history_button
+{
+	background: url(../images/butttons/calendarpe.gif) no-repeat 100% 0;
+}
+]]></add>
+		</operation>
+	</file>
+	
+	<file name="$themesdir/core/Display.template.php">
+		<operation>
+			<search position="before"><![CDATA[	$restore_message_button = create_button('restore_topic.gif', 'restore_message', 'restore_message', 'align="middle"');]]></search>
+			<add><![CDATA[
+			$history_button = create_button('calendarpe.gif', 'view_post_history', 'view_post_history', 'align="middle"');]]></add>
+		</operation>
+			
+		<operation>
+			<search position="after"><![CDATA[// Show a checkbox for quick moderation?]]></search>
+			<add><![CDATA[
+		// Can we see history?
+		if ($message['can_see_history'] && $message['has_history'])
+			echo '
+						<li><a href="', $scripturl, '?action=posthistory;topic=', $context['current_topic'], '.0;msg=', $message['id'], '">', $history_button, '</a></li>';
+		]]></add>
+		</operation>		
+	</file>
+</modification>
