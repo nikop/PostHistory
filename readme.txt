@@ -12,6 +12,7 @@ Permission can be set either to own or all posts and it's set by board.
 [list]
 	[li]Current version is now shown in list of edits[/li]
 	[li]Added markers for original version and current edit[/li]
+	[li]Now opens edits in popup windows when javascript is enabled[/li]
 	[li]SMF 2.0 RC 2 support[/li]
 [/list]
 

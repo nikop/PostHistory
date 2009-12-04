@@ -87,7 +87,7 @@ function PostHistory()
 		while ($row = $smcFunc['db_fetch_assoc']($request))
 			$context['post_history'][$row['id_edit']] = array(
 				'id' => $row['id_edit'],
-				'href' => $scripturl . '?action=posthistory;topic=' . $topic . '.0;msg=' . $_REQUEST['msg'] . ';edit=' . $row['id_edit'],
+				'href' => $scripturl . '?action=posthistory;topic=' . $topic . '.0;msg=' . $_REQUEST['msg'] . ';edit=' . $row['id_edit'] . (isset($_REQUEST['popup']) ? ';popup' : ''),
 				'name' => $row['modified_name'],
 				'time' => timeformat($row['modified_time']),
 				'is_original' => $row['modified_time'] == $context['ph_topic']['poster_time'],
@@ -97,24 +97,26 @@ function PostHistory()
 		
 		$context['post_history']['current'] = array(
 			'id' => 'current',
-			'href' => $scripturl . '?action=posthistory;topic=' . $topic . '.0;msg=' . $_REQUEST['msg'] . ';edit=current',
+			'href' => $scripturl . '?action=posthistory;topic=' . $topic . '.0;msg=' . $_REQUEST['msg'] . ';edit=current' . (isset($_REQUEST['popup']) ? ';popup' : ''),
 			'name' => !empty($context['ph_topic']['modified_name']) ? $context['ph_topic']['modified_name'] : $context['ph_topic']['poster_name'],
 			'time' => timeformat(!empty($context['ph_topic']['modified_time']) ? $context['ph_topic']['modified_time'] : $context['ph_topic']['poster_time']),			
 			'is_original' => empty($context['ph_topic']['modified_time']),
 			'is_current' => true,
 		);
+		
+		$context['sub_template'] = 'list_edits' . (isset($_REQUEST['popup']) ? '_popup' : '');
 	}
 	elseif ($_REQUEST['edit'] == 'current')
 	{
 		$context['current_edit'] = array(
 			'id' => 'current',
-			'href' => $scripturl . '?action=posthistory;topic=' . $topic . '.0;msg=' . $_REQUEST['msg'] . ';edit=current',
+			'href' => $scripturl . '?action=posthistory;topic=' . $topic . '.0;msg=' . $_REQUEST['msg'] . ';edit=current' . (isset($_REQUEST['popup']) ? ';popup' : ''),
 			'name' => !empty($context['ph_topic']['modified_name']) ? $context['ph_topic']['modified_name'] : $context['ph_topic']['poster_name'],
 			'time' => timeformat(!empty($context['ph_topic']['modified_time']) ? $context['ph_topic']['modified_time'] : $context['ph_topic']['poster_time']),			
 			'body' => parse_bbc($context['ph_topic']['body']),
 		);
 		
-		$context['sub_template'] = 'view_edit';
+		$context['sub_template'] = 'view_dit' . (isset($_REQUEST['popup']) ? '_popup' : '');
 	}
 	// Viewing single edit
 	else
@@ -140,7 +142,7 @@ function PostHistory()
 		
 		$context['current_edit'] = array(
 			'id' => $row['id_edit'],
-			'href' => $scripturl . '?action=posthistory;topic=' . $topic . ';msg=' . $_REQUEST['msg'] . ';edit=' . $row['id_edit'],
+			'href' => $scripturl . '?action=posthistory;topic=' . $topic . ';msg=' . $_REQUEST['msg'] . ';edit=' . $row['id_edit'] . (isset($_REQUEST['popup']) ? ';popup' : ''),
 			'name' => $row['modified_name'],
 			'time' => timeformat($row['modified_time']),
 			'body' => parse_bbc($row['body']),
@@ -148,10 +150,15 @@ function PostHistory()
 			
 		$smcFunc['db_free_result']($request);
 		
-		$context['sub_template'] = 'view_edit';
+		$context['sub_template'] = 'view_dit' . (isset($_REQUEST['popup']) ? '_popup' : '');
 	}
 	
+
+	// Template
+	if (isset($_REQUEST['popup']))
+		$context['template_layers'] = array();	
 	loadTemplate('PostHistory');
+	
 	$context['page_title'] = sprintf($txt['title_view_post_history'], $context['ph_topic']['msg_subject']);
 }
 
