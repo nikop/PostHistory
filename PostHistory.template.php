@@ -10,7 +10,6 @@ function template_list_edits()
 		<span class="left"></span>
 		', $context['ph_topic']['msg_subject'], '
 	</h3>
-	<div class="headerpadding titlebg">', $context['ph_topic']['msg_subject'], '</div>
 	<table class="table_grid" cellspacing="0" width="100%">
 		<thead>
 			<tr>
