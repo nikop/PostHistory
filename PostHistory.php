@@ -116,7 +116,7 @@ function PostHistory()
 			'body' => parse_bbc($context['ph_topic']['body']),
 		);
 		
-		$context['sub_template'] = 'view_dit' . (isset($_REQUEST['popup']) ? '_popup' : '');
+		$context['sub_template'] = 'view_edit' . (isset($_REQUEST['popup']) ? '_popup' : '');
 	}
 	// Viewing single edit
 	else
@@ -150,13 +150,17 @@ function PostHistory()
 			
 		$smcFunc['db_free_result']($request);
 		
-		$context['sub_template'] = 'view_dit' . (isset($_REQUEST['popup']) ? '_popup' : '');
+		$context['sub_template'] = 'view_edit' . (isset($_REQUEST['popup']) ? '_popup' : '');
 	}
 	
 
 	// Template
 	if (isset($_REQUEST['popup']))
-		$context['template_layers'] = array();	
+	{
+		$context['template_layers'] = array();
+		loadLanguage('Help');
+	}
+
 	loadTemplate('PostHistory');
 	
 	$context['page_title'] = sprintf($txt['title_view_post_history'], $context['ph_topic']['msg_subject']);

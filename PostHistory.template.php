@@ -6,21 +6,34 @@ function template_list_edits()
 	global $context, $settings, $options, $scripturl, $txt;
 
 	echo '
-	<div class="tborder">
-		<div class="headerpadding titlebg">', $context['ph_topic']['msg_subject'], '</div>
-		<table border="0" cellspacing="1" cellpadding="4" align="center" width="100%" class="bordercolor">
-			<tr class="catbg3">
-				<td>', $txt['ph_last_edit'], '</td>
-				<td>', $txt['ph_last_time'], '</td>
-				<td>', $txt['ph_view_edit'], '</td>
+	<h3 class="titlebg">
+		<span class="left"></span>
+		', $context['ph_topic']['msg_subject'], '
+	</h3>
+	<div class="headerpadding titlebg">', $context['ph_topic']['msg_subject'], '</div>
+	<table class="table_grid" cellspacing="0" width="100%">
+		<thead>
+			<tr>
+				<th scope="col" class="smalltext first_th">', $txt['ph_last_edit'], '</td>
+				<th scope="col" class="smalltext">', $txt['ph_last_time'], '</td>
+				<th scope="col" class="smalltext last_th">', $txt['ph_view_edit'], '</td>
 			</tr>';
 	
 	// First we check if moderators have been lazy
 	if (empty($context['post_history']))
 		echo '
-		<tr class="catbg"><td colspan="3">', $txt['ph_no_edits'], '</td></tr>';
+			<tr>
+				<th scope="col" class="smalltext first_th">', $txt['ph_last_edit'], '</td>
+				<th scope="col" class="smalltext">', $txt['ph_no_edits'], '</td>
+				<th scope="col" class="smalltext last_th">', $txt['ph_view_edit'], '</td>
+			</tr>
+		</thead>';
 	else
 	{
+		echo '
+		</thead>
+		<tbody>';
+			
 		$alternate = false;
 		
 		foreach ($context['post_history'] as $edit)
@@ -37,11 +50,13 @@ function template_list_edits()
 				
 			$alternate = !$alternate;
 		}
+		
+		echo '
+		</tbody>';
 	}
 	
 	echo '
-		</table>
-	</div>';
+	</table>';
 }
 
 function template_list_edits_popup()
@@ -58,53 +73,59 @@ function template_list_edits_popup()
 		<link rel="stylesheet" type="text/css" href="', $settings['theme_url'], '/css/index.css" />
 		<script type="text/javascript" src="', $settings['default_theme_url'], '/scripts/script.js"></script>
 	</head>
-	<body id="edits_popup">
-		<div class="windowbg description">
-		<span class="topslice"><span></span></span>';
-	
-	echo '
-	<div class="tborder">
-		<div class="headerpadding titlebg">', $context['ph_topic']['msg_subject'], '</div>
-		<table border="0" cellspacing="1" cellpadding="4" align="center" width="100%" class="bordercolor">
-			<tr class="catbg3">
-				<td>', $txt['ph_last_edit'], '</td>
-				<td>', $txt['ph_last_time'], '</td>
-				<td>', $txt['ph_view_edit'], '</td>
-			</tr>';
+	<body id="help_popup" style="background: white">
+		<h3 class="titlebg">
+			<span class="left"></span>
+			', $context['ph_topic']['msg_subject'], '
+		</h3>
+		<table class="table_grid" cellspacing="0" width="100%">
+			<thead>
+				<tr>
+					<th scope="col" class="smalltext first_th">', $txt['ph_last_edit'], '</td>
+					<th scope="col" class="smalltext">', $txt['ph_last_time'], '</td>
+					<th scope="col" class="smalltext last_th">', $txt['ph_view_edit'], '</td>
+				</tr>';
 	
 	// First we check if moderators have been lazy
 	if (empty($context['post_history']))
 		echo '
-		<tr class="catbg"><td colspan="3">', $txt['ph_no_edits'], '</td></tr>';
+				<tr>
+					<th scope="col" class="smalltext first_th">', $txt['ph_last_edit'], '</td>
+					<th scope="col" class="smalltext">', $txt['ph_no_edits'], '</td>
+					<th scope="col" class="smalltext last_th">', $txt['ph_view_edit'], '</td>
+				</tr>
+			</thead>';
 	else
 	{
+		echo '
+			</thead>
+			<tbody>';
+			
 		$alternate = false;
 		
 		foreach ($context['post_history'] as $edit)
 		{
 			echo '
-			<tr class="windowbg', $alternate ? '2' : '', '">
-				<td>', $edit['name'], '</td>
-				<td>
-					', $edit['time'], '
-					', $edit['is_current'] || $edit['is_original'] ? '(' . $txt['ph_' . ($edit['is_current'] ? 'current_' : '') . ($edit['is_original'] ? 'original_' : '') . 'edit'] . ')' : '', '
-				</td>
-				<td><a href="', $edit['href'], '">', $txt['ph_view_edit'], '</a></td>
-			</tr>';
+				<tr class="windowbg', $alternate ? '2' : '', '">
+					<td>', $edit['name'], '</td>
+					<td>
+						', $edit['time'], '
+						', $edit['is_current'] || $edit['is_original'] ? '(' . $txt['ph_' . ($edit['is_current'] ? 'current_' : '') . ($edit['is_original'] ? 'original_' : '') . 'edit'] . ')' : '', '
+					</td>
+					<td><a href="', $edit['href'], '">', $txt['ph_view_edit'], '</a></td>
+				</tr>';
 				
 			$alternate = !$alternate;
 		}
+		
+		echo '
+			</tbody>';
 	}
 	
 	echo '
 		</table>
-	</div>';
-	
-	echo '
-			
-			<br />
+		<div style="text-align: center">
 			<a href="javascript:self.close();">', $txt['close_window'], '</a>
-			<span class="botslice"><span></span></span>
 		</div>
 	</body>
 </html>';
@@ -115,12 +136,17 @@ function template_view_edit()
 	global $context, $settings, $options, $scripturl, $txt;
 
 	echo '
-	<div class="tborder">
-		<div class="headerpadding titlebg">', $context['ph_topic']['msg_subject'], '</div>
-		<div class="headerpadding catbg3">', $txt['ph_last_edit'], ': ', $context['current_edit']['name'], ' (', $context['current_edit']['time'], ')</div>
-		<div class="smallpadding windowbg2">
-			', $context['current_edit']['body'], '
+	<h3 class="titlebg">
+		<span class="left"></span>
+		', $context['ph_topic']['msg_subject'], '
+	</h3>
+	<em>', $txt['ph_last_edit'], ': ', $context['current_edit']['name'], ' (', $context['current_edit']['time'], ')</em><br />
+	<div class="windowbg">
+		<span class="topslice"><span></span></span>
+		<div class="content">
+			', $context['current_edit']['body'], '<br />
 		</div>
+		<span class="botslice"><span></span></span>
 	</div>';
 }
 
@@ -128,14 +154,35 @@ function template_view_edit_popup()
 {
 	global $context, $settings, $options, $scripturl, $txt;
 
-	echo '
-	<div class="tborder">
-		<div class="headerpadding titlebg">', $context['ph_topic']['msg_subject'], '</div>
-		<div class="headerpadding catbg3">', $txt['ph_last_edit'], ': ', $context['current_edit']['name'], ' (', $context['current_edit']['time'], ')</div>
-		<div class="smallpadding windowbg2">
-			', $context['current_edit']['body'], '
-		</div>
-	</div>';
+	// Since this is a popup of its own we need to start the html, etc.
+	echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"', $context['right_to_left'] ? ' dir="rtl"' : '', '>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=', $context['character_set'], '" />
+		<meta name="robots" content="noindex" />
+		<title>', $context['page_title'], '</title>
+		<link rel="stylesheet" type="text/css" href="', $settings['theme_url'], '/css/index.css" />
+		<script type="text/javascript" src="', $settings['default_theme_url'], '/scripts/script.js"></script>
+	</head>
+	<body id="help_popup" style="background: white">
+		<h3 class="titlebg">
+			<span class="left"></span>
+			', $context['ph_topic']['msg_subject'], '
+		</h3>
+		<em>', $txt['ph_last_edit'], ': ', $context['current_edit']['name'], ' (', $context['current_edit']['time'], ')</em><br />
+		<div class="windowbg">
+			<span class="topslice"><span></span></span>
+			<div class="content">
+				', $context['current_edit']['body'], '<br />
+				<div style="text-align: center">
+					<a href="javascript:self.close();">', $txt['close_window'], '</a>
+				</div>
+			</div>
+			<span class="botslice"><span></span></span>
+		</div>		
+	</body>
+</html>';
+
 }
 
 ?>
