@@ -48,7 +48,7 @@ function PostHistory()
 	// Get all the important topic info.
 	$request = $smcFunc['db_query']('', '
 		SELECT
-			ms.subject, mc.subject AS msg_subject, mc.id_member, mc.body,
+			t.id_topic, ms.subject, mc.subject AS msg_subject, mc.id_member, mc.body,
 			mc.modified_name, mc.modified_time, mc.poster_time,
 			IFNULL(mem.real_name, mc.poster_name) AS poster_name
 		FROM {db_prefix}topics AS t
@@ -106,53 +106,19 @@ function PostHistory()
 		
 		$context['sub_template'] = 'list_edits' . (isset($_REQUEST['popup']) ? '_popup' : '');
 	}
-	elseif ($_REQUEST['edit'] == 'current')
-	{
-		$context['current_edit'] = array(
-			'id' => 'current',
-			'href' => $scripturl . '?action=posthistory;topic=' . $topic . '.0;msg=' . $_REQUEST['msg'] . ';edit=current' . (isset($_REQUEST['popup']) ? ';popup' : ''),
-			'name' => !empty($context['ph_topic']['modified_name']) ? $context['ph_topic']['modified_name'] : $context['ph_topic']['poster_name'],
-			'time' => timeformat(!empty($context['ph_topic']['modified_time']) ? $context['ph_topic']['modified_time'] : $context['ph_topic']['poster_time']),			
-			'body' => parse_bbc($context['ph_topic']['body']),
-		);
-		
-		$context['sub_template'] = 'view_edit' . (isset($_REQUEST['popup']) ? '_popup' : '');
-	}
-	// Viewing single edit
 	else
 	{
-		// Make sure edit is integer
-		$_REQUEST['edit'] = (int) $_REQUEST['edit'];
+		// Sanitise numbers
+		if (is_numeric($_REQUEST['edit']))
+			$_REQUEST['edit'] = (int) $_REQUEST['edit'];
 		
-		$request = $smcFunc['db_query']('', '
-			SELECT id_edit, modified_name, modified_time, body
-			FROM {db_prefix}messages_history
-			WHERE id_msg = {int:id_msg}
-				AND id_edit = {int:edit}',
-			array(
-				'id_msg' => $_REQUEST['msg'],
-				'edit' => $_REQUEST['edit'],
-			)
-		);
+		$context['current_edit'] = loadEdit($context['ph_topic'], $_REQUEST['edit'], $_REQUEST['msg']);
 		
-		$row = $smcFunc['db_fetch_assoc']($request);
-		
-		if (!$row)
+		if (!$context['current_edit'])
 			fatal_lang_error('not_a_topic');
-		
-		$context['current_edit'] = array(
-			'id' => $row['id_edit'],
-			'href' => $scripturl . '?action=posthistory;topic=' . $topic . ';msg=' . $_REQUEST['msg'] . ';edit=' . $row['id_edit'] . (isset($_REQUEST['popup']) ? ';popup' : ''),
-			'name' => $row['modified_name'],
-			'time' => timeformat($row['modified_time']),
-			'body' => parse_bbc($row['body']),
-		);
 			
-		$smcFunc['db_free_result']($request);
-		
 		$context['sub_template'] = 'view_edit' . (isset($_REQUEST['popup']) ? '_popup' : '');
 	}
-	
 
 	// Template
 	if (isset($_REQUEST['popup']))
@@ -164,6 +130,50 @@ function PostHistory()
 	loadTemplate('PostHistory');
 	
 	$context['page_title'] = sprintf($txt['title_view_post_history'], $context['ph_topic']['msg_subject']);
+}
+
+function loadEdit($topic, $id_edit, $id_msg = 0)
+{
+	global $smcFunc;
+	
+	if (is_int($id_msg))
+	{
+		$request = $smcFunc['db_query']('', '
+			SELECT id_edit, id_msg, modified_name, modified_time, body
+			FROM {db_prefix}messages_history
+			WHERE id_msg = {int:id_msg}'. (!empty($id_msg) ? '
+				AND id_edit = {int:edit}' : ''),
+			array(
+				'id_msg' => $id_edit,
+				'edit' => $id_msg,
+			)
+		);
+		
+		$row = $smcFunc['db_fetch_assoc']($request);
+		
+		if (!$row)
+			return false;
+		
+		$smcFunc['db_free_result']($request);
+		
+		return array(
+			'id' => $row['id_edit'],
+			'href' => $scripturl . '?action=posthistory;topic=' . $topic['id_topic'] . '.0;msg=' . $row['id_msg'] . ';edit=' . $row['id_edit'] . (isset($_REQUEST['popup']) ? ';popup' : ''),
+			'name' => $row['modified_name'],
+			'time' => timeformat($row['modified_time']),
+			'body' => parse_bbc($row['body']),
+		);
+	}
+	elseif ($id_msg == 'current')
+		return array(
+			'id' => 'current',
+			'href' => $scripturl . '?action=posthistory;topic=' . $topic['id_topic'] . '.0;msg=' . $id_msg . ';edit=current' . (isset($_REQUEST['popup']) ? ';popup' : ''),
+			'name' => !empty($topic['modified_name']) ? $topic['modified_name'] : $topic['poster_name'],
+			'time' => timeformat(!empty($topic['modified_time']) ? $topic['modified_time'] : $topic['poster_time']),			
+			'body' => parse_bbc($topic['body']),
+		);
+	
+	return false;
 }
 
 ?>
