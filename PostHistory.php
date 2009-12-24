@@ -112,10 +112,10 @@ function PostHistory()
 		if (is_numeric($_REQUEST['edit']))
 			$_REQUEST['edit'] = (int) $_REQUEST['edit'];
 		
-		$context['current_edit'] = loadEdit($context['ph_topic'], $_REQUEST['edit'], $_REQUEST['msg']);
+		$context['current_edit'] = loadEdit($context['ph_topic'], $_REQUEST['edit'], $_REQUEST['msg'], !isset($_REQUEST['compare_to']));
 		
 		if (isset($_REQUEST['compare_to']))
-			$context['compare_edit'] = loadEdit($context['ph_topic'], $_REQUEST['compare_to'], $_REQUEST['msg']);
+			$context['compare_edit'] = loadEdit($context['ph_topic'], (int) $_REQUEST['compare_to'], $_REQUEST['msg'], false);
 		
 		if (!$context['current_edit'] || (isset($context['compare_edit']) && !$context['compare_edit']))
 			fatal_lang_error('not_a_topic');
@@ -125,8 +125,8 @@ function PostHistory()
 		else
 		{
 			$context['edit_changes'] = __diff(
-				preg_split('@\[|\]|=|\r?\n|<br />@', $context['compare_edit']['body'], 0, PREG_SPLIT_DELIM_CAPTURE & PREG_SPLIT_NO_EMPTY),
-				preg_split('@\[|\]|=|\r?\n|<br />@', $context['current_edit']['body'], 0, PREG_SPLIT_DELIM_CAPTURE & PREG_SPLIT_NO_EMPTY)
+				preg_split('@(\[|\]|=| |[\s, ]|<br />)@', $context['compare_edit']['body'], null, PREG_SPLIT_DELIM_CAPTURE),
+				preg_split('@(\[|\]|=| |[\s, ]|<br />)@', $context['current_edit']['body'], null, PREG_SPLIT_DELIM_CAPTURE)
 			);
 			$context['sub_template'] = 'compare_edit' . (isset($_REQUEST['popup']) ? '_popup' : '');
 		}
@@ -144,20 +144,20 @@ function PostHistory()
 	$context['page_title'] = sprintf($txt['title_view_post_history'], $context['ph_topic']['msg_subject']);
 }
 
-function loadEdit($topic, $id_edit, $id_msg = 0)
+function loadEdit($topic, $id_edit, $id_msg = 0, $parse = true)
 {
-	global $smcFunc;
+	global $smcFunc, $scripturl;
 	
-	if (is_int($id_msg))
+	if (is_int($id_edit))
 	{
 		$request = $smcFunc['db_query']('', '
 			SELECT id_edit, id_msg, modified_name, modified_time, body
 			FROM {db_prefix}messages_history
-			WHERE id_msg = {int:id_msg}'. (!empty($id_msg) ? '
-				AND id_edit = {int:edit}' : ''),
+			WHERE id_edit = {int:edit}'. (!empty($id_msg) ? '
+				AND id_msg = {int:msg}' : ''),
 			array(
-				'id_msg' => $id_edit,
-				'edit' => $id_msg,
+				'msg' => $id_msg,
+				'edit' => $id_edit,
 			)
 		);
 		
@@ -173,16 +173,16 @@ function loadEdit($topic, $id_edit, $id_msg = 0)
 			'href' => $scripturl . '?action=posthistory;topic=' . $topic['id_topic'] . '.0;msg=' . $row['id_msg'] . ';edit=' . $row['id_edit'] . (isset($_REQUEST['popup']) ? ';popup' : ''),
 			'name' => $row['modified_name'],
 			'time' => timeformat($row['modified_time']),
-			'body' => parse_bbc($row['body']),
+			'body' => $parse ? parse_bbc($row['body']) : $row['body'],
 		);
 	}
-	elseif ($id_msg == 'current')
+	elseif ($id_edit == 'current')
 		return array(
 			'id' => 'current',
 			'href' => $scripturl . '?action=posthistory;topic=' . $topic['id_topic'] . '.0;msg=' . $id_msg . ';edit=current' . (isset($_REQUEST['popup']) ? ';popup' : ''),
 			'name' => !empty($topic['modified_name']) ? $topic['modified_name'] : $topic['poster_name'],
 			'time' => timeformat(!empty($topic['modified_time']) ? $topic['modified_time'] : $topic['poster_time']),			
-			'body' => parse_bbc($topic['body']),
+			'body' => $parse ? parse_bbc($topic['body']) : $topic['body'],
 		);
 	
 	return false;
@@ -214,9 +214,9 @@ function __diff($old, $new)
 		);
 
 	return array_merge(
-		$this->__diff(array_slice($old, 0, $omax), array_slice($new, 0, $nmax)),
+		__diff(array_slice($old, 0, $omax), array_slice($new, 0, $nmax)),
 		array_slice($new, $nmax, $maxlen),
-		$this->__diff(array_slice($old, $omax + $maxlen), array_slice($new, $nmax + $maxlen))
+		__diff(array_slice($old, $omax + $maxlen), array_slice($new, $nmax + $maxlen))
 	);
 }
 

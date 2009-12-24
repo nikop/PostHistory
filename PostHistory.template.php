@@ -214,9 +214,9 @@ function template_compare_edit_popup()
 		else
 		{
 			if (!empty($change['d']))
-				echo '<del>', $change['d'], '</del>';
-			if (!empty($change['a']))
-				echo '<add>', $change['a'], '</add>';
+				echo '<del style="background-color: #FFDDDD; text-decoration: none">', implode('', $change['d']), '</del>';
+			if (!empty($change['i']))
+				echo '<ins style="background-color: #DDFFDD; text-decoration: none">', implode('', $change['i']), '</ins>';
 		}
 	}
 				
