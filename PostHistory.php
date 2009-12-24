@@ -114,10 +114,22 @@ function PostHistory()
 		
 		$context['current_edit'] = loadEdit($context['ph_topic'], $_REQUEST['edit'], $_REQUEST['msg']);
 		
-		if (!$context['current_edit'])
+		if (isset($_REQUEST['compare_to']))
+			$context['compare_edit'] = loadEdit($context['ph_topic'], $_REQUEST['compare_to'], $_REQUEST['msg']);
+		
+		if (!$context['current_edit'] || (isset($context['compare_edit']) && !$context['compare_edit']))
 			fatal_lang_error('not_a_topic');
 			
-		$context['sub_template'] = 'view_edit' . (isset($_REQUEST['popup']) ? '_popup' : '');
+		if (!isset($context['compare_edit']))
+			$context['sub_template'] = 'view_edit' . (isset($_REQUEST['popup']) ? '_popup' : '');
+		else
+		{
+			$context['edit_changes'] = __diff(
+				preg_split('@\[|\]|=|\r?\n|<br />@', $context['compare_edit']['body'], 0, PREG_SPLIT_DELIM_CAPTURE & PREG_SPLIT_NO_EMPTY),
+				preg_split('@\[|\]|=|\r?\n|<br />@', $context['current_edit']['body'], 0, PREG_SPLIT_DELIM_CAPTURE & PREG_SPLIT_NO_EMPTY)
+			);
+			$context['sub_template'] = 'compare_edit' . (isset($_REQUEST['popup']) ? '_popup' : '');
+		}
 	}
 
 	// Template
@@ -174,6 +186,38 @@ function loadEdit($topic, $id_edit, $id_msg = 0)
 		);
 	
 	return false;
+}
+
+function __diff($old, $new)
+{
+	$maxlen = 0;
+
+	foreach($old as $oindex => $ovalue)
+	{
+		$nkeys = array_keys($new, $ovalue);
+		foreach($nkeys as $nindex)
+		{
+			$matrix[$oindex][$nindex] = isset($matrix[$oindex - 1][$nindex - 1]) ?
+				$matrix[$oindex - 1][$nindex - 1] + 1 : 1;
+			if ($matrix[$oindex][$nindex] > $maxlen)
+			{
+				$maxlen = $matrix[$oindex][$nindex];
+				$omax = $oindex + 1 - $maxlen;
+				$nmax = $nindex + 1 - $maxlen;
+			}
+		}
+	}
+
+	if ($maxlen == 0)
+		return array(
+			array('d' => $old, 'i'=> $new)
+		);
+
+	return array_merge(
+		$this->__diff(array_slice($old, 0, $omax), array_slice($new, 0, $nmax)),
+		array_slice($new, $nmax, $maxlen),
+		$this->__diff(array_slice($old, $omax + $maxlen), array_slice($new, $nmax + $maxlen))
+	);
 }
 
 ?>
