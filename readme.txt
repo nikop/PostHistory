@@ -14,6 +14,11 @@ You can support development of this modification by donating via PayPal, [url=ht
 Thank you!
 
 [color=blue][b][size=12pt]Changelog[/size][/b][/color]
+[color=blue][b][size=10pt]0.3[/size][/b][/color]
+[list]
+	[li]Added ability to compare versions[/li]
+[/list]
+
 [color=blue][b][size=10pt]0.2[/size][/b][/color]
 [list]
 	[li]Current version is now shown in list of edits[/li]
