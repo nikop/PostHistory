@@ -5,12 +5,15 @@ function template_list_edits()
 {
 	global $context, $settings, $options, $scripturl, $txt;
 
+	if ($context['is_popup'])
+		template_ph_popup_above();
+
 	echo '
 	<h3 class="titlebg">
 		<span class="left"></span>
 		', $context['ph_topic']['msg_subject'], '
 	</h3>
-	<form action="', $scripturl, '?action=posthistory;msg=', $_REQUEST['msg'], '.0" method="post">
+	<form action="', $scripturl, '?action=posthistory;msg=', $_REQUEST['msg'], ';topic=', $context['current_topic'], '.0', $context['is_popup'] ? ';popup' : '', '" method="post">
 		<table class="table_grid" cellspacing="0" width="100%">
 			<thead>
 				<tr>
@@ -41,8 +44,8 @@ function template_list_edits()
 		{
 			echo '
 				<tr class="windowbg', $alternate ? '2' : '', '">
-					<td><input type="radio" name="edit" value="', $edit['id'], '" /></td>
-					<td>', !empty($edit['id_prev']) ? '<input type="radio" name="compare_to" value="' . $edit['id_prev'] . '" />' : '', '</td>
+					<td><input type="radio" name="compare_to" value="', $edit['id'], '" /></td>
+					<td>', !empty($edit['id_prev']) ? '<input type="radio" name="edit" value="' . $edit['id'] . '" />' : '', '</td>
 					<td>', $edit['name'], '</td>
 					<td>
 						', $edit['time'], '
@@ -52,7 +55,7 @@ function template_list_edits()
 						<a href="', $edit['href'], '">', $txt['ph_view_edit'], '</a>';
 			
 			if (!empty($edit['restore_href']))
-				echo ' | <a href="', $edit['restore_href'], '" target="_parent">', $txt['restore'], '</a>';
+				echo ' | <a href="', $edit['restore_href'], '" ', $context['is_popup'] ? ' onclick="return gotoAndClose(this.href);"' : '', '>', $txt['restore'], '</a>';
 						
 			echo '
 					</td>
@@ -63,7 +66,7 @@ function template_list_edits()
 		
 		echo '
 				<tr class="titlebg">
-					<td colspan="5" align="right"><input type="submit" value="', $txt['compare_selected'], '></td>
+					<td colspan="5" align="right"><input class="button_submit" type="submit" value="', $txt['compare_selected'], '"></td>
 				</tr>
 			</tbody>';
 	}
@@ -71,12 +74,18 @@ function template_list_edits()
 	echo '
 		</table>
 	</form>';
+	
+	if ($context['is_popup'])
+		template_ph_popup_below();
 }
 
 function template_view_edit()
 {
 	global $context, $settings, $options, $scripturl, $txt;
 
+	if ($context['is_popup'])
+		template_ph_popup_above();
+		
 	echo '
 	<h3 class="titlebg">
 		<span class="left"></span>
@@ -89,18 +98,25 @@ function template_view_edit()
 			', $context['current_edit']['body'], '<br /><br />';
 	
 	if (!empty($context['current_edit']['restore_href']))
-		echo '<a href="', $edit['restore_href'], '" target="_parent">', $txt['restore'], '</a>';
+		echo '
+			<div style="text-align: center"><a href="', $context['current_edit']['restore_href'], '"', $context['is_popup'] ? ' onclick="return gotoAndClose(this.href);"' : '', '>', $txt['restore'], '</a></div>';
 				
 	echo '
 		</div>
 		<span class="botslice"><span></span></span>
 	</div>';
+	
+	if ($context['is_popup'])
+		template_ph_popup_below();
 }
 
 function template_compare_edit()
 {
 	global $context, $settings, $options, $scripturl, $txt;
 
+	if ($context['is_popup'])
+		template_ph_popup_above();
+			
 	echo '
 		<h3 class="titlebg">
 			<span class="left"></span>
@@ -128,6 +144,9 @@ function template_compare_edit()
 		</div>
 		<span class="botslice"><span></span></span>
 	</div>';
+	
+	if ($context['is_popup'])
+		template_ph_popup_below();
 }
 
 function template_ph_popup_above()
@@ -143,6 +162,15 @@ function template_ph_popup_above()
 		<title>', $context['page_title'], '</title>
 		<link rel="stylesheet" type="text/css" href="', $settings['theme_url'], '/css/index.css" />
 		<script type="text/javascript" src="', $settings['default_theme_url'], '/scripts/script.js"></script>
+		<script type="text/javascript"><!-- // --><![CDATA[
+			function gotoAndClose(url)
+			{
+				window.opener.location = url;
+				self.close();
+				
+				return false;
+			}
+		// ]]></script>
 	</head>
 	<body id="help_popup" style="background: white">';
 }

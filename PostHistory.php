@@ -99,12 +99,12 @@ function PostHistory()
 				'id' => $row['id_edit'],
 				'id_prev' => $prev_edit,
 				'href' => $scripturl . '?action=posthistory;topic=' . $topic . '.0;msg=' . $_REQUEST['msg'] . ';edit=' . $row['id_edit'] . ($context['is_popup'] ? ';popup' : ''),
-				'restore_href' => $can_restore ? $scripturl . '?action=post;msg=' . $id_msg . ';restore_edit=' .  $row['id_edit'] : '',
+				'restore_href' => $can_restore ? $scripturl . '?action=post;msg=' . $_REQUEST['msg'] . ';topic=' . $topic . '.0;restore_edit=' .  $row['id_edit'] . ';' . $context['session_var'] . '=' . $context['session_id'] : '',
 				'diff_current' => $scripturl . '?action=posthistory;topic=' . $topic . '.0;msg=' . $_REQUEST['msg'] . ';edit=' . $row['id_edit'] . ';compare_to=current' . ($context['is_popup'] ? ';popup' : ''),
 				'diff_prev' => !empty($prev_edit) ? $scripturl . '?action=posthistory;topic=' . $topic . '.0;msg=' . $_REQUEST['msg'] . ';edit=' . $row['id_edit'] . ';compare_to=' . $prev_edit . ($context['is_popup'] ? ';popup' : '') : '',
 				'name' => $row['modified_name'],
 				'time' => timeformat($row['modified_time']),
-				'is_original' => $row['modified_time'] == $context['ph_topic']['poster_time'],
+				'is_original' => $row['modified_time'] == $context['ph_topic']['poster_time'] && empty($prev_edit),
 				'is_current' => false,
 			);
 			
@@ -154,7 +154,7 @@ function PostHistory()
 	// Template
 	if ($context['is_popup'])
 	{
-		$context['template_layers'] = array('ph_popup');
+		$context['template_layers'] = array();
 		loadLanguage('Help');
 	}
 
@@ -165,7 +165,7 @@ function PostHistory()
 
 function loadEdit($topic, $id_edit, $id_msg = 0, $parse = true)
 {
-	global $smcFunc, $context, $scripturl;
+	global $smcFunc, $context, $scripturl, $user_info;
 	
 	if (is_int($id_edit))
 	{
@@ -195,7 +195,7 @@ function loadEdit($topic, $id_edit, $id_msg = 0, $parse = true)
 		return array(
 			'id' => $row['id_edit'],
 			'href' => $scripturl . '?action=posthistory;topic=' . $topic['id_topic'] . '.0;msg=' . $row['id_msg'] . ';edit=' . $row['id_edit'] . ($context['is_popup'] ? ';popup' : ''),
-			'restore_href' => $can_restore ? $scripturl . '?action=post;msg=' . $id_msg . ';restore_edit=' .  $row['id_edit'] : '',
+			'restore_href' => $can_restore ? $scripturl . '?action=post;msg=' . $id_msg . ';topic=' . $topic['id_topic'] . '.0;restore_edit=' .  $row['id_edit'] . ';' . $context['session_var'] . '=' . $context['session_id'] : '',
 			'name' => $row['modified_name'],
 			'time' => timeformat($row['modified_time']),
 			'body' => $parse ? parse_bbc($row['body']) : $row['body'],

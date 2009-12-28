@@ -32,7 +32,7 @@
 		<operation>
 			<search position="replace"><![CDATA[m.body,
 				m.poster_name]]></search>
-			<add><![CDATA[IFNULL(h.body, m.body),
+			<add><![CDATA[IFNULL(h.body, m.body) AS body,
 				m.poster_name]]></add>
 		</operation>
 		
@@ -47,7 +47,7 @@
 			<search position="before"><![CDATA['attachment_type' => 0,
 				'id_msg' => $_REQUEST['msg'],]]></search>
 			<add><![CDATA[
-				'id_edit' => isset($_REQUEST['restore_edit']) ? (int) $_REQUEST['restore_edit'] : 0;,]]></add>
+				'id_edit' => isset($_REQUEST['restore_edit']) ? (int) $_REQUEST['restore_edit'] : 0,]]></add>
 		</operation>
 		
 		<operation>
@@ -59,7 +59,6 @@
 			isAllowedTo('posthistory_restore_any');
 
 ]]></add>
-			
 		</operation>
 	</file>
 	
