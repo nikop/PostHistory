@@ -41,6 +41,7 @@ $txt['ph_current_original_edit'] = 'current, original';
 $txt['ph_no_edits'] = 'No one has edited this post yet';
 
 $txt['compare_selected'] = 'Compare Selected';
+$txt['restore'] = 'Restore';
 
 $txt['permissionname_posthistory_view'] = 'View Edit History of Post';
 $txt['permissionhelp_posthistory_view'] = 'Allows user to view past versions of post.';

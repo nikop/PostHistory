@@ -67,6 +67,8 @@ function PostHistory()
 	$context['ph_topic'] = $smcFunc['db_fetch_assoc']($request);
 	$smcFunc['db_free_result']($request);
 	
+	$context['is_popup'] = isset($_REQUEST['popup']);
+	
 	if (empty($context['ph_topic']['id_member']) || $context['ph_topic']['id_member'] != $user_info['id'] || !allowedTo('posthistory_view_own'))
 		isAllowedTo('posthistory_view_any');
 		
@@ -85,15 +87,21 @@ function PostHistory()
 		$context['post_history'] = array();
 		
 		$prev_edit = 0;
-		
+
+		if ($context['ph_topic']['id_member'] == $user_info['id'] && !allowedTo('posthistory_restore_any'))
+			$can_restore = allowedTo('posthistory_restore_own');
+		else
+			$can_restore = allowedTo('posthistory_restore_any');
+			
 		while ($row = $smcFunc['db_fetch_assoc']($request))
 		{
 			$context['post_history'][$row['id_edit']] = array(
 				'id' => $row['id_edit'],
 				'id_prev' => $prev_edit,
-				'href' => $scripturl . '?action=posthistory;topic=' . $topic . '.0;msg=' . $_REQUEST['msg'] . ';edit=' . $row['id_edit'] . (isset($_REQUEST['popup']) ? ';popup' : ''),
-				'diff_current' => $scripturl . '?action=posthistory;topic=' . $topic . '.0;msg=' . $_REQUEST['msg'] . ';edit=' . $row['id_edit'] . ';compare_to=current' . (isset($_REQUEST['popup']) ? ';popup' : ''),
-				'diff_prev' => !empty($prev_edit) ? $scripturl . '?action=posthistory;topic=' . $topic . '.0;msg=' . $_REQUEST['msg'] . ';edit=' . $row['id_edit'] . ';compare_to=' . $prev_edit . (isset($_REQUEST['popup']) ? ';popup' : '') : '',
+				'href' => $scripturl . '?action=posthistory;topic=' . $topic . '.0;msg=' . $_REQUEST['msg'] . ';edit=' . $row['id_edit'] . ($context['is_popup'] ? ';popup' : ''),
+				'restore_href' => $can_restore ? $scripturl . '?action=post;msg=' . $id_msg . ';restore_edit=' .  $row['id_edit'] : '',
+				'diff_current' => $scripturl . '?action=posthistory;topic=' . $topic . '.0;msg=' . $_REQUEST['msg'] . ';edit=' . $row['id_edit'] . ';compare_to=current' . ($context['is_popup'] ? ';popup' : ''),
+				'diff_prev' => !empty($prev_edit) ? $scripturl . '?action=posthistory;topic=' . $topic . '.0;msg=' . $_REQUEST['msg'] . ';edit=' . $row['id_edit'] . ';compare_to=' . $prev_edit . ($context['is_popup'] ? ';popup' : '') : '',
 				'name' => $row['modified_name'],
 				'time' => timeformat($row['modified_time']),
 				'is_original' => $row['modified_time'] == $context['ph_topic']['poster_time'],
@@ -107,8 +115,8 @@ function PostHistory()
 		$context['post_history']['current'] = array(
 			'id' => 'current',
 			'id_prev' => $prev_edit,
-			'href' => $scripturl . '?action=posthistory;topic=' . $topic . '.0;msg=' . $_REQUEST['msg'] . ';edit=current' . (isset($_REQUEST['popup']) ? ';popup' : ''),
-			'diff_prev' => !empty($prev_edit) ? $scripturl . '?action=posthistory;topic=' . $topic . '.0;msg=' . $_REQUEST['msg'] . ';edit=current;compare_to=' . $prev_edit . (isset($_REQUEST['popup']) ? ';popup' : '') : '',
+			'href' => $scripturl . '?action=posthistory;topic=' . $topic . '.0;msg=' . $_REQUEST['msg'] . ';edit=current' . ($context['is_popup'] ? ';popup' : ''),
+			'diff_prev' => !empty($prev_edit) ? $scripturl . '?action=posthistory;topic=' . $topic . '.0;msg=' . $_REQUEST['msg'] . ';edit=current;compare_to=' . $prev_edit . ($context['is_popup'] ? ';popup' : '') : '',
 			'name' => !empty($context['ph_topic']['modified_name']) ? $context['ph_topic']['modified_name'] : $context['ph_topic']['poster_name'],
 			'time' => timeformat(!empty($context['ph_topic']['modified_time']) ? $context['ph_topic']['modified_time'] : $context['ph_topic']['poster_time']),			
 			'is_original' => empty($context['ph_topic']['modified_time']),
@@ -144,7 +152,7 @@ function PostHistory()
 	}
 
 	// Template
-	if (isset($_REQUEST['popup']))
+	if ($context['is_popup'])
 	{
 		$context['template_layers'] = array('ph_popup');
 		loadLanguage('Help');
@@ -157,7 +165,7 @@ function PostHistory()
 
 function loadEdit($topic, $id_edit, $id_msg = 0, $parse = true)
 {
-	global $smcFunc, $scripturl;
+	global $smcFunc, $context, $scripturl;
 	
 	if (is_int($id_edit))
 	{
@@ -179,9 +187,15 @@ function loadEdit($topic, $id_edit, $id_msg = 0, $parse = true)
 		
 		$smcFunc['db_free_result']($request);
 		
+		if ($topic['id_member'] == $user_info['id'] && !allowedTo('posthistory_restore_any'))
+			$can_restore = allowedTo('posthistory_restore_own');
+		else
+			$can_restore = allowedTo('posthistory_restore_any');
+		
 		return array(
 			'id' => $row['id_edit'],
-			'href' => $scripturl . '?action=posthistory;topic=' . $topic['id_topic'] . '.0;msg=' . $row['id_msg'] . ';edit=' . $row['id_edit'] . (isset($_REQUEST['popup']) ? ';popup' : ''),
+			'href' => $scripturl . '?action=posthistory;topic=' . $topic['id_topic'] . '.0;msg=' . $row['id_msg'] . ';edit=' . $row['id_edit'] . ($context['is_popup'] ? ';popup' : ''),
+			'restore_href' => $can_restore ? $scripturl . '?action=post;msg=' . $id_msg . ';restore_edit=' .  $row['id_edit'] : '',
 			'name' => $row['modified_name'],
 			'time' => timeformat($row['modified_time']),
 			'body' => $parse ? parse_bbc($row['body']) : $row['body'],
@@ -190,7 +204,7 @@ function loadEdit($topic, $id_edit, $id_msg = 0, $parse = true)
 	elseif ($id_edit == 'current')
 		return array(
 			'id' => 'current',
-			'href' => $scripturl . '?action=posthistory;topic=' . $topic['id_topic'] . '.0;msg=' . $id_msg . ';edit=current' . (isset($_REQUEST['popup']) ? ';popup' : ''),
+			'href' => $scripturl . '?action=posthistory;topic=' . $topic['id_topic'] . '.0;msg=' . $id_msg . ';edit=current' . ($context['is_popup'] ? ';popup' : ''),
 			'name' => !empty($topic['modified_name']) ? $topic['modified_name'] : $topic['poster_name'],
 			'time' => timeformat(!empty($topic['modified_time']) ? $topic['modified_time'] : $topic['poster_time']),			
 			'body' => $parse ? parse_bbc($topic['body']) : $topic['body'],

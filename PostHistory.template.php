@@ -17,7 +17,7 @@ function template_list_edits()
 					<th scope="col" class="smalltext first_th" colspan="2"></td>
 					<th scope="col" class="smalltext">', $txt['ph_last_edit'], '</td>
 					<th scope="col" class="smalltext">', $txt['ph_last_time'], '</td>
-					<th scope="col" class="smalltext last_th">', $txt['ph_view_edit'], '</td>
+					<th scope="col" class="smalltext last_th"</td>
 				</tr>';
 	
 	// First we check if moderators have been lazy
@@ -48,9 +48,16 @@ function template_list_edits()
 						', $edit['time'], '
 						', $edit['is_current'] || $edit['is_original'] ? '(' . $txt['ph_' . ($edit['is_current'] ? 'current_' : '') . ($edit['is_original'] ? 'original_' : '') . 'edit'] . ')' : '', '
 					</td>
-					<td><a href="', $edit['href'], '">', $txt['ph_view_edit'], '</a></td>
+					<td>
+						<a href="', $edit['href'], '">', $txt['ph_view_edit'], '</a>';
+			
+			if (!empty($edit['restore_href']))
+				echo ' | <a href="', $edit['restore_href'], '" target="_parent">', $txt['restore'], '</a>';
+						
+			echo '
+					</td>
 				</tr>';
-					
+			
 			$alternate = !$alternate;
 		}
 		
@@ -79,7 +86,12 @@ function template_view_edit()
 	<div class="windowbg">
 		<span class="topslice"><span></span></span>
 		<div class="content">
-			', $context['current_edit']['body'], '<br />
+			', $context['current_edit']['body'], '<br /><br />';
+	
+	if (!empty($context['current_edit']['restore_href']))
+		echo '<a href="', $edit['restore_href'], '" target="_parent">', $txt['restore'], '</a>';
+				
+	echo '
 		</div>
 		<span class="botslice"><span></span></span>
 	</div>';
