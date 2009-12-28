@@ -28,6 +28,41 @@
 		</operation>
 	</file>
 	
+	<file name="$sourcedir/Post.php">
+		<operation>
+			<search position="replace"><![CDATA[m.body,
+				m.poster_name]]></search>
+			<add><![CDATA[IFNULL(h.body, m.body),
+				m.poster_name]]></add>
+		</operation>
+		
+		<operation>
+			<search position="before"><![CDATA[				INNER JOIN {db_prefix}topics AS t ON (t.id_topic = {int:current_topic})
+				LEFT JOIN {db_prefix}attachments AS a ON (a.id_msg = m.id_msg AND a.attachment_type = {int:attachment_type})]]></search>
+			<add><![CDATA[
+				LEFT JOIN {db_prefix}messages_history AS h ON (h.id_msg = {int:id_msg} AND h.id_edit = {int:id_edit})]]></add>
+		</operation>
+		
+		<operation>
+			<search position="before"><![CDATA['attachment_type' => 0,
+				'id_msg' => $_REQUEST['msg'],]]></search>
+			<add><![CDATA[
+				'id_edit' => isset($_REQUEST['restoreEdit']) ? (int) $_REQUEST['restoreEdit'] : 0;,]]></add>
+		</operation>
+		
+		<operation>
+			<search position="after"><![CDATA[		// When was it last modified?]]></search>
+			<add><![CDATA[
+		if (isset($_REQUEST['restoreEdit']) && $row['id_member_poster'] == $user_info['id'] && !allowedTo('posthistory_restore_any'))
+			isAllowedTo('posthistory_restore_own');
+		elseif (isset($_REQUEST['restoreEdit']))
+			isAllowedTo('posthistory_restore_any');
+
+]]></add>
+			
+		</operation>
+	</file>
+	
 	<file name="$sourcedir/Subs-Post.php">
 		<operation>
 			<search position="before"><![CDATA[		if (!empty($modSettings['search_custom_index_config'])]]></search>
@@ -144,7 +179,8 @@
 		<operation>
 			<search position="before"><![CDATA[			'modify' => array(true, 'post', 'modify', 'moderate'),]]></search>
 			<add><![CDATA[
-			'posthistory_view' => array(true, 'post', 'moderate', 'moderate'),]]></add>
+			'posthistory_view' => array(true, 'post', 'moderate', 'moderate'),
+			'posthistory_restore' => array(true, 'post', 'moderate', 'moderate'),]]></add>
 		</operation>
 	</file>
 

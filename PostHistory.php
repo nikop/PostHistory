@@ -84,27 +84,38 @@ function PostHistory()
 		
 		$context['post_history'] = array();
 		
+		$prev_edit = 0;
+		
 		while ($row = $smcFunc['db_fetch_assoc']($request))
+		{
 			$context['post_history'][$row['id_edit']] = array(
 				'id' => $row['id_edit'],
+				'id_prev' => $prev_edit,
 				'href' => $scripturl . '?action=posthistory;topic=' . $topic . '.0;msg=' . $_REQUEST['msg'] . ';edit=' . $row['id_edit'] . (isset($_REQUEST['popup']) ? ';popup' : ''),
+				'diff_current' => $scripturl . '?action=posthistory;topic=' . $topic . '.0;msg=' . $_REQUEST['msg'] . ';edit=' . $row['id_edit'] . ';compare_to=current' . (isset($_REQUEST['popup']) ? ';popup' : ''),
+				'diff_prev' => !empty($prev_edit) ? $scripturl . '?action=posthistory;topic=' . $topic . '.0;msg=' . $_REQUEST['msg'] . ';edit=' . $row['id_edit'] . ';compare_to=' . $prev_edit . (isset($_REQUEST['popup']) ? ';popup' : '') : '',
 				'name' => $row['modified_name'],
 				'time' => timeformat($row['modified_time']),
 				'is_original' => $row['modified_time'] == $context['ph_topic']['poster_time'],
 				'is_current' => false,
 			);
+			
+			$prev_edit = $row['id_edit'];
+		}
 		$smcFunc['db_free_result']($request);
 		
 		$context['post_history']['current'] = array(
 			'id' => 'current',
+			'id_prev' => $prev_edit,
 			'href' => $scripturl . '?action=posthistory;topic=' . $topic . '.0;msg=' . $_REQUEST['msg'] . ';edit=current' . (isset($_REQUEST['popup']) ? ';popup' : ''),
+			'diff_prev' => !empty($prev_edit) ? $scripturl . '?action=posthistory;topic=' . $topic . '.0;msg=' . $_REQUEST['msg'] . ';edit=current;compare_to=' . $prev_edit . (isset($_REQUEST['popup']) ? ';popup' : '') : '',
 			'name' => !empty($context['ph_topic']['modified_name']) ? $context['ph_topic']['modified_name'] : $context['ph_topic']['poster_name'],
 			'time' => timeformat(!empty($context['ph_topic']['modified_time']) ? $context['ph_topic']['modified_time'] : $context['ph_topic']['poster_time']),			
 			'is_original' => empty($context['ph_topic']['modified_time']),
 			'is_current' => true,
 		);
 		
-		$context['sub_template'] = 'list_edits' . (isset($_REQUEST['popup']) ? '_popup' : '');
+		$context['sub_template'] = 'list_edits';
 	}
 	else
 	{
@@ -121,21 +132,21 @@ function PostHistory()
 			fatal_lang_error('not_a_topic');
 			
 		if (!isset($context['compare_edit']))
-			$context['sub_template'] = 'view_edit' . (isset($_REQUEST['popup']) ? '_popup' : '');
+			$context['sub_template'] = 'view_edit';
 		else
 		{
 			$context['edit_changes'] = __diff(
 				preg_split('@(\[|\]|=| |[\s, ]|<br />)@', $context['compare_edit']['body'], null, PREG_SPLIT_DELIM_CAPTURE),
 				preg_split('@(\[|\]|=| |[\s, ]|<br />)@', $context['current_edit']['body'], null, PREG_SPLIT_DELIM_CAPTURE)
 			);
-			$context['sub_template'] = 'compare_edit' . (isset($_REQUEST['popup']) ? '_popup' : '');
+			$context['sub_template'] = 'compare_edit';
 		}
 	}
 
 	// Template
 	if (isset($_REQUEST['popup']))
 	{
-		$context['template_layers'] = array();
+		$context['template_layers'] = array('ph_popup');
 		loadLanguage('Help');
 	}
 
