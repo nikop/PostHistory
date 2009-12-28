@@ -42,6 +42,8 @@ $txt['ph_no_edits'] = 'Konuda henüz bir düzenleme yok';
 
 // !!! Untranslated
 $txt['compare_selected'] = 'Compare Selected';
+// !!! Untranslated
+$txt['restore'] = 'Restore';
 
 $txt['permissionname_posthistory_view'] = 'İleti düzenleme geçmişini görüntüle';
 $txt['permissionhelp_posthistory_view'] = 'Eski İleti geçmişini görüntüle';

@@ -42,6 +42,8 @@ $txt['ph_no_edits'] = 'Tätä viestiä ei ole vielä muokattu';
 
 // !!! Untranslated
 $txt['compare_selected'] = 'Compare Selected';
+// !!! Untranslated
+$txt['restore'] = 'Restore';
 
 $txt['permissionname_posthistory_view'] = 'Viestin muokkaushistorian katselu';
 $txt['permissionhelp_posthistory_view'] = 'Näkee viestin edelliset versiot jos niitä on muokattu';
