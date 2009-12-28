@@ -40,35 +40,25 @@ $txt['ph_current_original_edit'] = 'nykyinen, alkuperäinen';
 
 $txt['ph_no_edits'] = 'Tätä viestiä ei ole vielä muokattu';
 
-// !!! Untranslated
-$txt['compare_selected'] = 'Compare Selected';
-// !!! Untranslated
-$txt['restore'] = 'Restore';
+$txt['compare_selected'] = 'Vertaile valittuja';
+$txt['restore'] = 'Palauta';
 
 $txt['permissionname_posthistory_view'] = 'Viestin muokkaushistorian katselu';
 $txt['permissionhelp_posthistory_view'] = 'Näkee viestin edelliset versiot jos niitä on muokattu';
 $txt['permissionname_posthistory_view_own'] = 'Oma';
 $txt['permissionname_posthistory_view_any'] = 'Kaikki';
-// !!! Untranslated
-$txt['permissionname_posthistory_restore'] = 'Restore older version';
-// !!! Untranslated
-$txt['permissionhelp_posthistory_restore'] = 'Allows user to start editing from older version of post.';
-// !!! Untranslated
-$txt['permissionname_posthistory_restore_own'] = 'Own post';
-// !!! Untranslated
-$txt['permissionname_posthistory_restore_any'] = 'Any post';
+$txt['permissionname_posthistory_restore'] = 'Vanhemman version palauttaminen';
+$txt['permissionhelp_posthistory_restore'] = 'Sallii käyttäjän palauttaa aiemmen version viestistä.';
+$txt['permissionname_posthistory_restore_own'] = 'Oma';
+$txt['permissionname_posthistory_restore_any'] = 'Kaikki';
 $txt['permissionname_simple_posthistory_view_own'] = 'Katsoa omien viestien muokkaushistoria';
 $txt['permissionname_simple_posthistory_view_any'] = 'Katsoa kaikkien viestien muokkaushistoria
-// !!! Untranslated
-$txt['permissionname_simple_posthistory_restore_own'] = 'Restore older version of own post';
-// !!! Untranslated
-$txt['permissionname_simple_posthistory_restore_any'] = 'Restore older versions of someone else\'s post';
+$txt['permissionname_simple_posthistory_restore_own'] = 'Palauttaa vanhempi versio omasta viestistä';
+$txt['permissionname_simple_posthistory_restore_any'] = 'Palauttaa vanhempi versio kenen tahansa viestistä';
 
 $txt['cannot_posthistory_view_any'] = 'Et voi katsoa tämän viestin muokkaushistoriaa!';
-// !!! Untranslated
-$txt['cannot_posthistory_restore_own'] = 'You are not allowed to start editing from older version of your posts!';
-// !!! Untranslated
-$txt['cannot_posthistory_restore_any'] = 'You are not allowed to start editing from older version of someone else\'s post!';
+$txt['cannot_posthistory_restore_own'] = 'Et voi palauttaa oman viestin vanhempaa versiota!';
+$txt['cannot_posthistory_restore_any'] = 'Et voi palauttaa kenen tahansa viestin vanhempaa versiota!';
 // Post History END]]></add>
 		</operation>
 	</file>
