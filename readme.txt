@@ -17,6 +17,7 @@ Thank you!
 [color=blue][b][size=10pt]0.3[/size][/b][/color]
 [list]
 	[li]Added ability to compare versions[/li]
+	[li]SMF 2.0 RC 3 support[/li]
 [/list]
 
 [color=blue][b][size=10pt]0.2[/size][/b][/color]
@@ -28,7 +29,7 @@ Thank you!
 [/list]
 
 [color=blue][b][size=12pt]SMF Versions supported[/size][/b][/color]
-Only SMF 2.0 RC2 is supported.
+Only SMF 2.0 RC3 is supported.
 
 [color=blue][b][size=12pt]Languages supported[/size][/b][/color]
 Translations for English, Finnish and Turkish are included.
