@@ -1,8 +1,16 @@
 <?php
+/**
+ *
+ * @version 0.4
+ * @package PostHistory
+ */
 
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
+/**
+ *
+ */
 function PostHistory()
 {
 	global $context, $scripturl, $smcFunc, $topic, $user_info, $txt;
@@ -163,6 +171,9 @@ function PostHistory()
 	$context['page_title'] = sprintf($txt['title_view_post_history'], $context['ph_topic']['msg_subject']);
 }
 
+/**
+ *
+ */
 function loadEdit($topic, $id_edit, $id_msg = 0, $parse = true)
 {
 	global $smcFunc, $context, $scripturl, $user_info;
@@ -213,6 +224,9 @@ function loadEdit($topic, $id_edit, $id_msg = 0, $parse = true)
 	return false;
 }
 
+/**
+ *
+ */
 function __diff($old, $new)
 {
 	$maxlen = 0;

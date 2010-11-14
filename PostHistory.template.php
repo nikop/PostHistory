@@ -1,6 +1,13 @@
 <?php
-// Version: 0.1; PostHistory
+/**
+ * 
+ * @version 0.4
+ * @package PostHistory
+ */
 
+/**
+ *
+ */
 function template_list_edits()
 {
 	global $context, $settings, $options, $scripturl, $txt;
@@ -79,6 +86,9 @@ function template_list_edits()
 		template_ph_popup_below();
 }
 
+/**
+ *
+ */
 function template_view_edit()
 {
 	global $context, $settings, $options, $scripturl, $txt;
@@ -110,6 +120,9 @@ function template_view_edit()
 		template_ph_popup_below();
 }
 
+/**
+ *
+ */
 function template_compare_edit()
 {
 	global $context, $settings, $options, $scripturl, $txt;
@@ -149,6 +162,9 @@ function template_compare_edit()
 		template_ph_popup_below();
 }
 
+/**
+ *
+ */
 function template_ph_popup_above()
 {
 	global $context, $settings, $options, $txt;
@@ -175,6 +191,9 @@ function template_ph_popup_above()
 	<body id="help_popup" style="background: white">';
 }
 
+/**
+ *
+ */
 function template_ph_popup_below()
 {
 	global $context, $settings, $options, $txt;

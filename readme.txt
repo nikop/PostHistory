@@ -14,6 +14,10 @@ You can support development of this modification by donating via PayPal, [url=ht
 Thank you!
 
 [color=blue][b][size=12pt]Changelog[/size][/b][/color]
+[color=blue][b][size=10pt]0.4[/size][/b][/color]
+[list]
+	[li]SMF 2.0 RC 4 support[/li]
+[/list]
 [color=blue][b][size=10pt]0.3[/size][/b][/color]
 [list]
 	[li]Added ability to compare versions[/li]

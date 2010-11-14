@@ -51,6 +51,7 @@ $tables = array(
 				'columns' => array('id_edit')
 			),
 			array(
+				'name' => 'id_msg',
 				'type' => 'index',
 				'columns' => array('id_msg')
 			),
