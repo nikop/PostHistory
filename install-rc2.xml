@@ -199,7 +199,7 @@
 		<operation>
 			<search position="replace"><![CDATA[		if ($settings['show_modify'] && !empty($message['modified']['name']))
 			echo '
-								&#171; <em>', $txt['last_edit'], ' ', $message['modified']['time'], $message['modified']['name'] !== $message['member']['name'] ? ' ' . $txt['by'] . ' ' . $message['modified']['name'] : '', '</em> &#187;';]]></search>
+								&#171; <em>', $txt['last_edit'], ': ', $message['modified']['time'], ' ', $txt['by'], ' ', $message['modified']['name'], '</em> &#187;';]]></search>
 			<add><![CDATA[
 		// Show last edit + has history?
 		if ($settings['show_modify'] && !empty($message['modified']['name']) && $message['can_see_history'] && $message['has_history'])
@@ -212,7 +212,7 @@
 		// or ..last edit but no history?
 		elseif ($settings['show_modify'] && !empty($message['modified']['name']))
 			echo '
-								&#171; <em>', $txt['last_edit'], ': ', $message['modified']['time'], $message['modified']['name'] !== $message['member']['name'] ? ' ' . $txt['by'] . ' ' . $message['modified']['name'] : '', '</em> &#187;';]]></add>
+								&#171; <em>', $txt['last_edit'], ': ', $message['modified']['time'], ' ', $txt['by'], ' ', $message['modified']['name'], '</em> &#187;';]]></add>
 		</operation>		
 	</file>
 	
