@@ -39,27 +39,12 @@
     </target>
 	
     <target name="build" depends="prepare">
-		<copy todir="${builddir}/ptinstall" >
-			<fileset dir="./ptinstall/">
-				<include name="**" />
-			</fileset>
-		</copy>
-		
-		<copy todir="${builddir}/Sources" >
-			<fileset dir="./Sources/">
-				<include name="**" />
-			</fileset>
-		</copy>
-
-		<copy todir="${builddir}/Themes" >
-			<fileset dir="./Themes/">
-				<include name="**" />
-			</fileset>
-		</copy>
-		
 		<copy todir="${builddir}" >
 			<fileset dir="./">
 				<include name="*" />
+				<include name="language/*" />
+				<include name="post_history/*" />
+				<exclude name="dist/*" />
 				<exclude name="build.*" />
 			</fileset>
 		</copy>	
