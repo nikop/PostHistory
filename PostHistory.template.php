@@ -16,10 +16,11 @@ function template_list_edits()
 		template_ph_popup_above();
 
 	echo '
-	<h3 class="titlebg">
-		<span class="left"></span>
-		', $context['ph_topic']['msg_subject'], '
-	</h3>
+	<div class="title_bar">
+		<h3 class="titlebg">
+			', $context['ph_topic']['msg_subject'], '
+		</h3>
+	</div>
 	<form action="', $scripturl, '?action=posthistory;msg=', $_REQUEST['msg'], ';topic=', $context['current_topic'], '.0', $context['is_popup'] ? ';popup' : '', '" method="post">
 		<table class="table_grid" cellspacing="0" width="100%">
 			<thead>
@@ -97,10 +98,11 @@ function template_view_edit()
 		template_ph_popup_above();
 		
 	echo '
-	<h3 class="titlebg">
-		<span class="left"></span>
-		', $context['ph_topic']['msg_subject'], '
-	</h3>
+	<div class="title_bar">
+		<h3 class="titlebg">
+			', $context['ph_topic']['msg_subject'], '
+		</h3>
+	</div>
 	<em>', $txt['ph_last_edit'], ': ', $context['current_edit']['name'], ' (', $context['current_edit']['time'], ')</em><br />
 	<div class="windowbg">
 		<span class="topslice"><span></span></span>
@@ -131,10 +133,11 @@ function template_compare_edit()
 		template_ph_popup_above();
 			
 	echo '
-		<h3 class="titlebg">
-			<span class="left"></span>
-			', $context['ph_topic']['msg_subject'], '
-		</h3>
+		<div class="title_bar">
+			<h3 class="titlebg">
+				', $context['ph_topic']['msg_subject'], '
+			</h3>
+		</div>
 		<em>', $txt['ph_last_edit'], ': ', $context['current_edit']['name'], ' (', $context['current_edit']['time'], ')</em><br />
 		<div class="windowbg">
 			<span class="topslice"><span></span></span>
