@@ -46,6 +46,7 @@
 				<include name="post_history/*" />
 				<exclude name="dist/*" />
 				<exclude name="build.*" />
+				<exclude name="*.komodo*" />
 			</fileset>
 		</copy>	
     </target>

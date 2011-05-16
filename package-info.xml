@@ -33,7 +33,7 @@
 		<require-file name="PostHistory.php" destination="$sourcedir" />
 		<require-file name="PostHistory.template.php" destination="$themedir" />
 		
-		<modification format="xml" type="file">install-rc2.xml</modification>
+		<modification format="xml" type="file">install.xml</modification>
 		<modification format="xml" type="file">language/english.xml</modification>
 		<modification format="xml" type="file">language/english-utf8.xml</modification>
 		<modification format="xml" type="file">language/finnish.xml</modification>
