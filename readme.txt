@@ -1,5 +1,5 @@
 [hr]
-[center][color=red][size=16pt][b]Post History {version}[/b][/size][/color]
+[center][color=red][size=16pt][b]Post History 1.0[/b][/size][/color]
 [/center]
 [hr]
 
@@ -14,32 +14,17 @@ You can support development of this modification by donating via PayPal, [url=ht
 Thank you!
 
 [color=blue][b][size=12pt]Changelog[/size][/b][/color]
-[color=blue][b][size=10pt]0.4[/size][/b][/color]
+[color=blue][b][size=10pt]1.0[/size][/b][/color]
 [list]
-	[li]SMF 2.0 RC 4 support[/li]
-[/list]
-[color=blue][b][size=10pt]0.3[/size][/b][/color]
-[list]
-	[li]Added ability to compare versions[/li]
-	[li]SMF 2.0 RC 3 support[/li]
-[/list]
-
-[color=blue][b][size=10pt]0.2[/size][/b][/color]
-[list]
-	[li]Current version is now shown in list of edits[/li]
-	[li]Added markers for original version and current edit[/li]
-	[li]Now opens edits in popup windows when javascript is enabled[/li]
-	[li]SMF 2.0 RC 2 support[/li]
+	[li]Use hooks when possible[/li]
+	[li]SMF 2.0 RC 5 support[/li]
 [/list]
 
 [color=blue][b][size=12pt]SMF Versions supported[/size][/b][/color]
-Only SMF 2.0 RC3 is supported.
+Only SMF 2.0 RC5 is supported.
 
 [color=blue][b][size=12pt]Languages supported[/size][/b][/color]
 Translations for English, Finnish and Turkish are included.
 
 [color=blue][b][size=12pt]Installation[/size][/b][/color]
 When doing manual install you have to upload post_history directory in SMF directory and run install.php file included in directory.
-
-[color=blue][b][size=12pt]Support[/size][/b][/color]
-[url=https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=801590]You can support this mod by donating[/url], Thank you!

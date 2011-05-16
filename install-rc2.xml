@@ -18,16 +18,8 @@
 <modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
 	<!-- This information needs to be the same as that in the package-info.xml. -->
 	<id>Niko:PostHistory</id>
-	<version>{version}</version>
+	<version>1.0</version>
 
-	<file name="$boarddir/index.php">
-		<operation>
-			<search position="before"><![CDATA[		'post2' => array('Post.php', 'Post2'),]]></search>
-			<add><![CDATA[
-		'posthistory' => array('PostHistory.php', 'PostHistory'),]]></add>
-		</operation>
-	</file>
-	
 	<file name="$sourcedir/Post.php">
 		<operation>
 			<search position="replace"><![CDATA[m.body,
@@ -116,19 +108,6 @@
 			// END Post History]]></add>
 		</operation>
 	</file>
-
-	<file name="$sourcedir/ManageSettings.php">
-		<operation>
-			<search position="after"><![CDATA[
-		// pm = post moderation.]]></search>
-			<add><![CDATA[		// posthistory
-		'posthistory' => array(
-			'settings' => array(
-				'posthistoryEnabled' => 1,
-			),
-		),]]></add>
-		</operation>
-	</file>
 	
 	<file name="$sourcedir/RemoveTopic.php">
 		<operation>
@@ -171,15 +150,6 @@
 			);
 
 ]]></add>
-		</operation>
-	</file>
-	
-	<file name="$sourcedir/ManagePermissions.php">
-		<operation>
-			<search position="before"><![CDATA[			'modify' => array(true, 'post', 'modify', 'moderate'),]]></search>
-			<add><![CDATA[
-			'posthistory_view' => array(true, 'post', 'moderate', 'moderate'),
-			'posthistory_restore' => array(true, 'post', 'moderate', 'moderate'),]]></add>
 		</operation>
 	</file>
 

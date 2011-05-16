@@ -1,7 +1,8 @@
 <?php
 /**
- *
- * @version 0.4
+ * Main source file for PostHistory
+ * 
+ * @version 1.0
  * @package PostHistory
  */
 
@@ -9,7 +10,45 @@ if (!defined('SMF'))
 	die('Hacking attempt...');
 
 /**
+ * 
+ */
+function PH_actions(&$actionArray)
+{
+	global $modSettings;
+	
+	if (empty($modSettings['posthistoryEnabled']))
+		return;
+	
+	$actionArray['posthistory'] = array('PostHistory.php', 'PostHistory');
+}
+
+/**
  *
+ */
+function PH_core_features(&$core_features)
+{
+	$core_features['posthistory'] = array(
+		'settings' => array(
+			'posthistoryEnabled' => 1,
+		),
+	);
+}
+
+/**
+ *
+ */
+function PH_load_permissions(&$permissionGroups, &$permissionList, &$leftPermissionGroups, &$hiddenPermissions, &$relabelPermissions)
+{
+	global $context;
+	
+	$permissionList['post'] += array(
+		'posthistory_view' => array(true, 'post', 'moderate', 'moderate'),
+		'posthistory_restore' => array(true, 'post', 'moderate', 'moderate')
+	);
+}
+
+/**
+ * Displays edit from topic
  */
 function PostHistory()
 {
@@ -172,7 +211,12 @@ function PostHistory()
 }
 
 /**
- *
+ * Loads edit
+ * 
+ * @param array $topic Topic data
+ * @param int $id_edit Edit ID
+ * @param int $id_msg Message ID
+ * @param bool $parse Whetever to parse BBC
  */
 function loadEdit($topic, $id_edit, $id_msg = 0, $parse = true)
 {
@@ -225,7 +269,10 @@ function loadEdit($topic, $id_edit, $id_msg = 0, $parse = true)
 }
 
 /**
+ * Returns difference beetween two versions
  *
+ * @param array $old array of strings to compare (before)
+ * @param array $new array of strings to compare (after)
  */
 function __diff($old, $new)
 {

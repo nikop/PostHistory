@@ -19,10 +19,10 @@
 <package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
 	<id>Niko:PostHistory</id>
 	<name>Post History</name>
-	<version>{version}</version>
+	<version>1.0</version>
 	<type>modification</type>
 
-	<install for="2.0 RC4">
+	<install for="2.0 RC5">
 		<readme parsebbc="true">readme.txt</readme>
 		
 		<!-- Run Installer/upgrader -->
@@ -36,7 +36,7 @@
 		<modification format="xml" type="file">install-rc2.xml</modification>
 	</install>
 
-	<uninstall for="2.0 RC4">
+	<uninstall for="2.0 RC5">
 		<remove-file name="$sourcedir/PostHistory.php" />
 		<remove-file name="$themedir/PostHistory.template.php" />
 		
