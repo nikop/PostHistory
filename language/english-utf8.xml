@@ -18,9 +18,9 @@
 <modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
 	<!-- This information needs to be the same as that in the package-info.xml. -->
 	<id>Niko:PostHistory</id>
-	<version>{version}</version>
+	<version>1.0</version>
 
-	<file name="$languagedir/Modifications.english.php">
+	<file name="$languagedir/Modifications.english-utf8.php" error="ignore">
 		<operation>
 			<search position="end" />
 			<add><![CDATA[// Post History Start

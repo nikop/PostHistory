@@ -34,6 +34,12 @@
 		<require-file name="PostHistory.template.php" destination="$themedir" />
 		
 		<modification format="xml" type="file">install-rc2.xml</modification>
+		<modification format="xml" type="file">language/english.xml</modification>
+		<modification format="xml" type="file">language/english-utf8.xml</modification>
+		<modification format="xml" type="file">language/finnish.xml</modification>
+		<modification format="xml" type="file">language/finnish-utf8.xml</modification>
+		<modification format="xml" type="file">language/turkish.xml</modification>
+		<modification format="xml" type="file">language/turkish-utf8.xml</modification>
 	</install>
 
 	<uninstall for="2.0 RC5">
