@@ -41,7 +41,7 @@ function PH_load_permissions(&$permissionGroups, &$permissionList, &$leftPermiss
 {
 	global $context;
 	
-	$permissionList['post'] += array(
+	$permissionList['board'] += array(
 		'posthistory_view' => array(true, 'post', 'moderate', 'moderate'),
 		'posthistory_restore' => array(true, 'post', 'moderate', 'moderate')
 	);
