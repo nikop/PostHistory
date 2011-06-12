@@ -2,7 +2,7 @@
 /**
  * 
  * @package PostHistory
- * @version 1.0
+ * @version 1.0.1
  */
 
 /**
@@ -24,7 +24,7 @@ function template_list_edits()
 	<form action="', $scripturl, '?action=posthistory;msg=', $_REQUEST['msg'], ';topic=', $context['current_topic'], '.0', $context['is_popup'] ? ';popup' : '', '" method="post">
 		<table class="table_grid" cellspacing="0" width="100%">
 			<thead>
-				<tr>
+				<tr class="catbg">
 					<th scope="col" class="smalltext first_th" colspan="2"></td>
 					<th scope="col" class="smalltext">', $txt['ph_last_edit'], '</td>
 					<th scope="col" class="smalltext">', $txt['ph_last_time'], '</td>
