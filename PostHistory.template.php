@@ -1,8 +1,8 @@
 <?php
 /**
  * 
- * @version 1.0
  * @package PostHistory
+ * @version 1.0
  */
 
 /**

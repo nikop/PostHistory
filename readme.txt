@@ -14,6 +14,10 @@ You can support development of this modification by donating via PayPal, [url=ht
 Thank you!
 
 [color=blue][b][size=12pt]Changelog[/size][/b][/color]
+[color=blue][b][size=10pt]1.0.1[/size][/b][/color]
+[list]
+	[li]SMF 2.0 support[/li]
+[/list]
 [color=blue][b][size=10pt]1.0[/size][/b][/color]
 [list]
 	[li]Use hooks when possible[/li]
@@ -21,7 +25,7 @@ Thank you!
 [/list]
 
 [color=blue][b][size=12pt]SMF Versions supported[/size][/b][/color]
-Only SMF 2.0 RC5 is supported.
+Only SMF 2.0 and 2.0 RC5 is supported.
 
 [color=blue][b][size=12pt]Languages supported[/size][/b][/color]
 Translations for English, Finnish and Turkish are included.

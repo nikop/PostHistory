@@ -1,9 +1,9 @@
 <?php
 /**
  * Main source file for PostHistory
- * 
- * @version 1.0
+ *
  * @package PostHistory
+ * @version 1.0
  */
 
 if (!defined('SMF'))
