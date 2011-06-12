@@ -47,6 +47,6 @@
 		<remove-file name="$themedir/PostHistory.template.php" />
 		
 		<!-- Remove code modifications -->
-		<modification format="xml" type="file" reverse="true">install-rc2.xml</modification>
+		<modification format="xml" type="file" reverse="true">install.xml</modification>
 	</uninstall>
 </package-info>
