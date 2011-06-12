@@ -19,7 +19,7 @@
 <package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
 	<id>Niko:PostHistory</id>
 	<name>Post History</name>
-	<version>1.0</version>
+	<version>1.0.1</version>
 	<type>modification</type>
 
 	<install for="2.0 RC5, 2.0">
@@ -42,7 +42,7 @@
 		<modification format="xml" type="file">language/turkish-utf8.xml</modification>
 	</install>
 
-	<uninstall for="2.0 RC5, 2.0">
+	<uninstall>
 		<remove-file name="$sourcedir/PostHistory.php" />
 		<remove-file name="$themedir/PostHistory.template.php" />
 		
