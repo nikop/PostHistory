@@ -18,7 +18,7 @@
 <modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
 	<!-- This information needs to be the same as that in the package-info.xml. -->
 	<id>Niko:PostHistory</id>
-	<version>1.0.1</version>
+	<version>1.02</version>
 
 	<file name="$sourcedir/Post.php">
 		<operation>
